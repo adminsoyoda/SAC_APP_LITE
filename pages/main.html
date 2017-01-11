@@ -2,7 +2,7 @@
 <script>
     //Load de Action
     
-    $(document).ready(function () {
+    (function() {
         BDConsulta("SELECT * FROM APP_USUARIO;", function (obj) {
             AppGestorName = "";
             AppGestorName = unescape(obj.NOMBRE);
@@ -29,7 +29,7 @@
         
         //Option Initial
         //loadOption('10000001');
-    });
+    })();
 /*
     document.addEventListener("backbutton", onBackKeyDown);
 */
@@ -56,8 +56,8 @@
         <a href="#inside" class="cus-btn-lg" data-icon="bars" data-iconpos="notext" style="border-color: #003763">Menu</a>
         <div class="center-div" style="text-align: right;">
             <a href="#" class="ui-btn ui-icon-delete ui-corner-all cus-war-ele"><strong id="AppGestorEmpresa"></strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="#" onclick="SyncProcess(true);" class="ui-btn ui-icon-refresh ui-btn-icon-notext ui-corner-all cus-btn-lg cus-suc-ele" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="#" onclick="CerrarSesion();" class="ui-btn ui-icon-power ui-btn-icon-notext ui-corner-all cus-btn-lg cus-dan-ele" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="#" onclick="SyncProcess(true);" class="ui-btn ui-icon-refresh ui-btn-icon-notext ui-corner-all cus-btn-lg cus-dan-ele" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="#" onclick="CerrarSesion();" class="ui-btn ui-icon-power ui-btn-icon-notext ui-corner-all cus-btn-lg" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
     </div>
 
