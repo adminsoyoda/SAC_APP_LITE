@@ -73,13 +73,13 @@ function BDActualizacionObj(sqlCommand,Obj) {
 
 
 function SyncExeReady(CODIGOINTERNO,TIPOSYNC, RETORNO) {
-    $("#loader_sys").show();
+    $("#loader_sys_btn_show").click();
     var dataPost = {
         CODIGOINTERNO: CODIGOINTERNO
     };
     AjaxSAC(syncServer + "/" + TIPOSYNC, dataPost, true, function (callback) {
         $("#sync_sys").html(callback);
-        $("#loader_sys").hide();
+        $("#loader_sys_btn_hide").click();
         RETORNO("OK");
         return true;
     });
@@ -87,7 +87,7 @@ function SyncExeReady(CODIGOINTERNO,TIPOSYNC, RETORNO) {
                     
 
 function SyncExe(CODIGOINTERNO,INISYNC, RETORNO) {
-    $("#loader_sys").show();
+    $("#loader_sys_btn_show").click();
     var dataPost = {
         CODIGOINTERNO: CODIGOINTERNO,
         INISYNC:INISYNC,
@@ -95,7 +95,7 @@ function SyncExe(CODIGOINTERNO,INISYNC, RETORNO) {
     };
     AjaxSAC(syncServer + "/SyncExe", dataPost, true, function (callback) {
         $("#sync_sys").html(callback);
-        $("#loader_sys").hide();
+        $("#loader_sys_btn_hide").click();
         RETORNO("OK");
         return true;
     });
@@ -124,101 +124,81 @@ function SyncProcess(loader) {
     });
 }
 
-function SyncExeSendInfo(sqlCommand,table,loader) {
-    if (loader) { $("#loader_sys").show(); }
-    BDConsultaOBJ(sqlCommand, function (obj) {
-        var objString=""; 
-        var result = [];
-        for (var i=0;i<obj.rows.length;i++) {
-            result.push(obj.rows.item(i));
-        }
-        objString = JSON.stringify(result, null, 2);
-        var dataPost = {
-            OBJECTDATA: objString,
-            TABLE: table
-        };
-        AjaxSAC(syncServer + "/SyncDeviceInfo"+table, dataPost, loader, function (callback) {
-            if (loader) {
-                alerta(callback);
-            }
-            return true;
-        });
-    });
-}
-
-
-function SyncApp_Web(TableSelect, TableAction, TableFinAction, ColumType, detailColum,FieldsUpdate,FielsdExist,alerta,loader){
+function SyncApp_Web(TableSelect, TableAction, TableFinAction, ColumType, detailColum,FieldsUpdate,FielsdExist,alerta,msg,loader){
+    if (loader) { $("#loader_sys_btn_show").click(); }
     index=0;
     strAction="";
-	regTable = TableSelect.split("@@");
-	regTableColum = detailColum.split("@@");
-	regTableAction = TableAction.split("@@");
-	regTableFinAction = TableFinAction.split("@@");
-	regColumType = ColumType.split("@@");
-	regFieldsUpdate = FieldsUpdate.split("@@");
-	regFieldExist = FielsdExist.split("@@");  
-
-    SyncAppWebExec(alerta,loader);
+    regTable = TableSelect.split("@@");
+    regTableColum = detailColum.split("@@");
+    regTableAction = TableAction.split("@@");
+    regTableFinAction = TableFinAction.split("@@");
+    regColumType = ColumType.split("@@");
+    regFieldsUpdate = FieldsUpdate.split("@@");
+    regFieldExist = FielsdExist.split("@@");  
+    SyncAppWebExec(alerta,msg,loader);
 }
 
-function SyncAppWebExec(alerta,loader){
+function SyncAppWebExec(alerta,msg,loader){
+
     if(index < regTable.length){
-	    BDConsultaOBJ( regTable[index] , function (obj){    
-	        for (var j = 0; j < obj.rows.length; j++) {        
-	            var row = obj.rows.item(j);
+        BDConsultaOBJ( regTable[index] , function (obj){    
+            for (var j = 0; j < obj.rows.length; j++) {        
+                var row = obj.rows.item(j);
 
-	            var actionStr = ((index > 0)? ((j==0)?'|':'') : '')+regTableAction[index] ;
-	            var regColum = regTableColum[index].split("|");
-	            for (var k = 0; k < regColum.length; k++)
-	            {
-	                if (regColumType[index] == "IN"){
-	                    actionStr = actionStr + ((k == 0) ? "'" : ",'") + ((row[regColum[k]]== null) ? '0': row[regColum[k]]) + "'";
-	                }
-	                else{
-	                    actionStr = actionStr + ((k == 0) ? "" : ",") + regColum[k] + "='"+ ((row[regColum[k]]==null) ? '0': row[regColum[k]] )+"'";
-	                }
-	            }
-	            
-	            actionStr = actionStr + regTableFinAction[index] 
-				
-				var regFieldExistItems = regFieldExist[index].split("|");
-	            for (var m = 0; m < regFieldExistItems.length; m++)
-	            {
-	            	if(m==0){
-	            		actionStr = actionStr + regFieldExistItems[m];
-	            	}else{
-	            		actionStr = actionStr + ((m == 1) ? " " : " AND ") +regFieldExistItems[m]+ " ='"+ row[regFieldExistItems[m]] +"'";
-	            	}
-	                
-	            }
-	            var regFieldsUpdateAll= regFieldsUpdate[index].split("$");
-	            var regFieldsUpdateItems = regFieldsUpdateAll[0].split("|");
-	            for (var l = 0; l < regFieldsUpdateItems.length; l++)
-	            {
-	            	if(l==0){
-	            		actionStr = actionStr + regFieldsUpdateItems[l];
-	            	}else{
-	                	actionStr = actionStr + ((l == 1) ? "" : " AND ") +regFieldsUpdateItems[l] + "='"+ row[regFieldsUpdateItems[l]] +"'";
-	            	}
-	            }
+                var actionStr = ((index > 0)? ((j==0)?'|':'') : '')+regTableAction[index] ;
+                var regColum = regTableColum[index].split("|");
+                for (var k = 0; k < regColum.length; k++)
+                {
+                    if (regColumType[index] == "IN"){
+                        actionStr = actionStr + ((k == 0) ? "'" : ",'") + ((row[regColum[k]]== null) ? '0': row[regColum[k]]) + "'";
+                    }
+                    else{
+                        actionStr = actionStr + ((k == 0) ? "" : ",") + regColum[k] + "='"+ ((row[regColum[k]]==null) ? '0': row[regColum[k]] )+"'";
+                    }
+                }
+                
+                actionStr = actionStr + regTableFinAction[index] 
+                
+                var regFieldExistItems = regFieldExist[index].split("|");
+                for (var m = 0; m < regFieldExistItems.length; m++)
+                {
+                    if(m==0){
+                        actionStr = actionStr + regFieldExistItems[m];
+                    }else{
+                        actionStr = actionStr + ((m == 1) ? " " : " AND ") +regFieldExistItems[m]+ " ='"+ row[regFieldExistItems[m]] +"'";
+                    }
+                    
+                }
+                var regFieldsUpdateAll= regFieldsUpdate[index].split("$");
+                var regFieldsUpdateItems = regFieldsUpdateAll[0].split("|");
+                for (var l = 0; l < regFieldsUpdateItems.length; l++)
+                {
+                    if(l==0){
+                        actionStr = actionStr + regFieldsUpdateItems[l];
+                    }else{
+                        actionStr = actionStr + ((l == 1) ? "" : " AND ") +regFieldsUpdateItems[l] + "='"+ row[regFieldsUpdateItems[l]] +"'";
+                    }
+                }
 
-	            actionStr = actionStr + "}" +regFieldsUpdateAll[1]
+                actionStr = actionStr + "}" +regFieldsUpdateAll[1]
 
-	            actionStr = ((j > 0)? '|' : '') + actionStr  ;
-	            strType = strType+ "|"+ regColumType[index];
-	            strAction=strAction+actionStr;
-	        }
-	        index++;
-	        SyncAppWebExec(alerta,loader);
-	    });
-	}else{
-		dataPost={     
+                actionStr = ((j > 0)? '|' : '') + actionStr  ;
+                strType = strType+ "|"+ regColumType[index];
+                strAction=strAction+actionStr;
+            }
+            index++;
+            SyncAppWebExec(alerta,msg,loader);
+        });
+    }else{
+        dataPost={     
             STRACTION : strAction,
             TYPE : strType,
             IDGOOGLE : registerId,
             USR : masterUsuario
         }
         AjaxSAC(syncServer+'/SyncAppWebExe', dataPost, loader, function (callback) {
+            if (loader) { $("#loader_sys_btn_show").click(); }
+
             if(alerta){
                 alert(callback);
             } 
@@ -233,9 +213,12 @@ function SyncAppWebExec(alerta,loader){
                 BDActualizacion(regcallback[i]);
             }
 
-            if(loader){
-            	alert(regcallbackAll[1]);	
+            if(msg)
+            {
+                alert(regcallbackAll[1]);
+                $("#loader_sys_btn_hide").click();
+                $("#sync_sys").html("");
             }
         });
-	}
+    }
 }

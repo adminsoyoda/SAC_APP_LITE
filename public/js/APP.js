@@ -5,11 +5,12 @@ var masterUsuario = "";
 //Contenedor General
 function contentPage(ContenedorGlobal) {
     $("#content_master").hide();
-    $("#loader_sys").show();
+    $("#loader_sys_btn_show").click();
     $("#content_master").load(ContenedorGlobal, function () {
         setTimeout(function(){
             $('#content_master').show(200);  
             $( "div[data-role=page]" ).page( "destroy" ).page();
+            $("#loader_sys_btn_hide").click();
         }, 500); 
     });
 }
@@ -18,16 +19,16 @@ function contentPage(ContenedorGlobal) {
 //Ajax SAC Controller
 //---------------------------------------------------------------------------------------------------------------------------
 function AjaxSAC(controllerAction, dataPost, loader, callback) {
-    if (loader){$("#loader_sys").show();}
+    if (loader){$("#loader_sys_btn_show").click();}
     $.ajax({
         url: controllerAction,
         type: "post",
         data: dataPost,
         success: function (data) {
-            $("#loader_sys").hide();
+            $("#loader_sys_btn_hide").click();
             callback(data);
         }, error: function (jqXHR, ajaxOptions, thrownError) {
-            $("#loader_sys").hide();
+            $("#loader_sys_btn_hide").click();
             alert(formatErrorMessage(jqXHR, ajaxOptions));
         }
     });
