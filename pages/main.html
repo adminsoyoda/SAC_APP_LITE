@@ -55,11 +55,38 @@
     */
 </script>
 
+<style type="text/css">
+    .cus-btn-lg
+    {
+        width: 55px !important; 
+        height: 55px !important; 
+        font-size: 48px !important;
+        margin-top: -3px !important;
+    }
+
+    .cus-lg
+    {
+        height: 80px !important; 
+    }
+
+    .center-div
+    {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border-radius: 3px;
+      text-align: center;
+    }
+</style>
 
 <div data-role="main" id="a">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h1>External header Page A</h1>
-        <a href="#inside" data-icon="bars" data-iconpos="notext">Menu</a>
+    <div data-role="header" class="cus-lg" data-position="fixed" data-theme="a">
+        <div class="center-div">
+            <h1>External header Page A</h1> 
+        </div>
+        <a href="#inside" class="cus-btn-lg" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
     <div data-role="panel" id="inside" data-position="left" data-display="overlay" data-theme="a">
         <ul data-role="listview">
