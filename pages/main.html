@@ -55,45 +55,28 @@
     */
 </script>
 
-<style type="text/css">
-    .cus-btn-lg
-    {
-        width: 55px !important; 
-        height: 55px !important; 
-        font-size: 48px !important;
-        margin-top: -3px !important;
-    }
-
-    .cus-lg
-    {
-        height: 80px !important; 
-    }
-
-    .center-div
-    {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      border-radius: 3px;
-      text-align: center;
-    }
-</style>
-
 <div data-role="main" id="a">
-    <div data-role="header" class="cus-lg" data-position="fixed" data-theme="a">
-        <div class="center-div">
-            <h1>External header Page A</h1> 
-        </div>
+    <div data-role="header" class="cus-lg-header cus-pri-ele" data-position="fixed" data-theme="a">
         <a href="#inside" class="cus-btn-lg" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
+
     <div data-role="panel" id="inside" data-position="left" data-display="overlay" data-theme="a">
-        <ul data-role="listview">
-            <li data-icon="back"><a href="#" data-rel="close">Close</a></li>
-            <li>Internal panel</li>
-            <li>Page A</li>
-            <li>Overlay</li>
+        <ul data-role="listview" style="background-size: 200px;">
+            
+            <li data-icon="home">
+                <a class="cus-lg " style="" href="#" data-rel="close">
+                    <div>
+                        <p style="text-overflow: ellipsis;font-size: 16px">
+                            <img src="public/img/Logo.png" width="50" style="border-radius: 3em;">
+                            <strong>Augusto Centeno aaaaaaaaaaaaaa</strong>
+                        <p>
+                    </div>
+                </a>
+            </li>
+            <li data-icon="clock"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Rutero</div></a></li>
+            <li data-icon="calendar"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Gestion</div></a></li>
+            <li data-icon="search"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Informes</div></a></li>
+            <li data-icon="user"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Hola</div></a></li>
         </ul>
     </div>
 </div>
