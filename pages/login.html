@@ -37,6 +37,7 @@
             if (obj.rows.length > 0) {
                 for (var i = 0; i < obj.rows.length; i++) { var row = obj.rows.item(i);  masterUsuario=row.IDUSERWEB}
                 BDActualizacion("UPDATE APP_USUARIO SET ACTIVO='A'");
+                contentPage('pages/main.html');
             } else {
                 alert("Error en Credenciales...");
                 $("#txt_user").focus();
@@ -86,7 +87,7 @@
     <input type="text" name="txt_user" id="txt_user" value="" placeholder="Usuario" >
     <input type="password" name="txt_pass" id="txt_pass" value="" placeholder="Password" >
 
-    <a class="ui-btn cus-pri-ele" data-inline="true">Entrar</a><hr>
+    <a class="ui-btn cus-pri-ele" data-inline="true" onclick="Login();">Entrar</a><hr>
     <a class="ui-btn ui-btn-icon-right cus-dan-ele cus-ele-mar-top-30 ui-icon-gear ui-btn-icon-left" id="AppButtonConfig" onclick="configuracion();">Contifuracion Inicial del Sistema</a>
 
     <div class=" cus-ele-mar-top-30" id="AppSegPassConfig" style="display:none">
