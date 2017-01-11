@@ -1,42 +1,38 @@
 
 <script>
     //Load de Action
-    /*
+    
     $(document).ready(function () {
         BDConsulta("SELECT * FROM APP_USUARIO;", function (obj) {
             AppGestorName = "";
-            AppGestorFechaActuali = "";
             AppGestorName = unescape(obj.NOMBRE);
-            AppGestorFechaActuali = obj.FECHACREACION;
-            $("#AppGestorName_Top").html(AppGestorName);
-            $("#AppGestorName_Menu").html(AppGestorName.substring(0, 20) + '...');
-            $("#AppGestorName_Logout").html(AppGestorName);
-            $("#AppGestorFechaActuali_Logout").html(AppGestorFechaActuali);
+            $("#AppGestorName").html(AppGestorName);
         });
 
         //Menu Izquierdo
-        BDConsultaOBJ("SELECT * FROM APP_MENU;", function (obj) {
+        /*BDConsultaOBJ("SELECT * FROM APP_MENU;", function (obj) {
             for (var i = 0; i < obj.rows.length; i++) {
                 var row = obj.rows.item(i);
                 $("#AppGestorOption").append(row.MENU);
             }
-        });
+        });*/
 
         BDConsultaOBJ("SELECT * FROM APP_EMPRESA;", function (obj) {
             for (var i = 0; i < obj.rows.length; i++) {
                 var row = obj.rows.item(i);
                 if(i==0){
                     masterEmpresa=row.RAZONSOCIAL
+                    $("#AppGestorEmpresa").html(masterEmpresa);
                  }
             }
         });
         
         //Option Initial
-        loadOption('10000001');
+        //loadOption('10000001');
     });
-
+/*
     document.addEventListener("backbutton", onBackKeyDown);
-    
+*/
     function onBackKeyDown(){
         navigator.notification.confirm('¿Salir de la aplicación?',function(button) {
           if (button == 2) {
@@ -52,16 +48,16 @@
             contentPage('pages/login.html');
         }
     }
-    */
+    
 </script>
 
 <div data-role="main" id="a">
     <div data-role="header" class="cus-lg-header cus-pri-ele" data-position="fixed" data-theme="a">
         <a href="#inside" class="cus-btn-lg" data-icon="bars" data-iconpos="notext" style="border-color: #003763">Menu</a>
         <div class="center-div" style="text-align: right;">
-            <a href="#" class="ui-btn ui-icon-delete ui-corner-all cus-war-ele"><strong>IMPORPARIS</strong></a>&nbsp;&nbsp;
-            <a href="#" class="ui-btn ui-icon-refresh ui-btn-icon-notext ui-corner-all cus-btn-lg cus-suc-ele" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;
-            <a href="#" class="ui-btn ui-icon-power ui-btn-icon-notext ui-corner-all cus-btn-lg cus-dan-ele" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;
+            <a href="#" class="ui-btn ui-icon-delete ui-corner-all cus-war-ele"><strong id="AppGestorEmpresa"></strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="#" onclick="SyncProcess(true);" class="ui-btn ui-icon-refresh ui-btn-icon-notext ui-corner-all cus-btn-lg cus-suc-ele" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="#" onclick="CerrarSesion();" class="ui-btn ui-icon-power ui-btn-icon-notext ui-corner-all cus-btn-lg cus-dan-ele" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
     </div>
 
@@ -72,8 +68,8 @@
                 <a class="cus-lg " style="" href="#" data-rel="close">
                     <div>
                         <p style="text-overflow: ellipsis;font-size: 16px">
-                            <img src="logo.png" width="50" style="border-radius: 3em;">
-                            <strong>Augusto Centeno aaaaaaaaaaaaaa</strong>
+                            <img src="public/img/Logo.png" width="50" style="border-radius: 3em;">
+                            <strong id="AppGestorName"></strong>
                         <p>
                     </div>
                 </a>
