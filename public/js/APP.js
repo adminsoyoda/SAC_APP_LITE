@@ -112,8 +112,7 @@ function loadOption(option) {
     });
 }
 
-function loadOption2(option) {
-    $("#App_content").hide();
+function loadOption2(ContenedorGlobal) {
     $("#App_content").load(ContenedorGlobal, function () {
         setTimeout(function(){
             $( "div[data-role=page]" ).page( "destroy" ).page();
