@@ -233,11 +233,20 @@
                     i_LINES=i_LINES+1;
                 }
             }
+
+            var tdCount = document.getElementsByName("tdCount");
+            for (var i = 0; i < tdCount.length; i++) {
+                tdCount[i].innerHTML = "# "+(i+1)+" - ";
+            }
       }); 
   }
 
   function fn_DeleteItemList(trId){
       $("#"+trId).remove();
+      var tdCount = document.getElementsByName("tdCount");
+      for (var i = 0; i < tdCount.length; i++) {
+          tdCount[i].innerHTML = "# "+(i+1)+" - ";
+      }
       $("#tagLineasPedido").collapsibleset( "refresh" );
   }
 
@@ -258,13 +267,13 @@
 
 <div data-role="popup" id="popupMenuItem" data-overlay-theme="a" data-theme="a" style="width: 100%;height: 100%;" data-dismissible="false">
     <a href="#" data-rel="back" id="popupMenuItemClose" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right cus-btn-lg">Close</a>
-    <div style="padding: 20px 20px 0px 20px;height: 40%;">
+    <div style="padding: 20px 20px 0px 20px;height: 30%;">
     	<input type="text" id="tagSearchITEMCODE" value="" placeholder="Codigo de Item" onkeypress="fn_ListaItemsSearch(event)">
     	<input type="text" id="tagSearchITEMNAME" value="" placeholder="Nombre de Item" onkeypress="fn_ListaItemsSearch(event)">
     	<input type="text" id="tagSearchITMSGRPNAM" value="" placeholder="Linea de Item" onkeypress="fn_ListaItemsSearch(event)">
     	<a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-plus" onclick="fn_SeleccionItemsMultiple();">Agregar Item</a>
     </div>
-    <div style="overflow-y: scroll;height: 60%;" >
+    <div style="overflow-y: scroll;height: 70%;" >
         <ul data-role="listview" data-inset="true" id="tagItemsSearch_Lineas" style="font-size: 5px;">
         </ul>
     </div>
@@ -274,7 +283,8 @@
         <h3 >
           <table style="font-size:11pt;width: 100%"> 
               <tr>
-                  <td id='tdITEMNAMEFIRST~' style="width:30%">asas</td>
+                  <td name="tdCount" id='tdCount~' style="width:2%">#</td>
+                  <td id='tdITEMNAMEFIRST~' style="width:28%">asas</td>
                   <td id='tdQUANTITYFIRST~' style='font-weight:bold;color:#666;width:14%'></td>
                   <td id='tdPRICECOMERCIALFIRST~' style='font-weight:bold;color:#666;width:17%'></td>
                   <td id='tdDESCUENTOFIRST~' style='font-weight:bold;color:#666;width:17%'></td>
