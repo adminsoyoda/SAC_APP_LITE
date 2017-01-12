@@ -99,6 +99,7 @@
 
   function fn_SeleccionItemsSearch(ITEMCODE,CANTACTUAL,CANTSEL,DESCUENTO,PRICES,CANTTOTAL,CANTBACKORDER) {
       $("#popupMenuItemClose").click();
+      $("#loader_sys_btn_show").click();
       BDConsultaOBJ("SELECT IFNULL((SELECT APP_PRECIO_CLIENTE.PRICE FROM APP_PRECIO_CLIENTE WHERE APP_ITEM.ITEMCODE = APP_PRECIO_CLIENTE.ITEMCODE AND APP_ITEM.EMPRESA = APP_PRECIO_CLIENTE.EMPRESA AND APP_PRECIO_CLIENTE.CARDCODE = '"+$("#opt_ListaCliente").val()+"' ORDER BY APP_PRECIO_CLIENTE.DOCDATE LIMIT 1),'0') ULTPRECVENT, IFNULL((SELECT APP_PRECIO_CLIENTE.QUANTITY FROM APP_PRECIO_CLIENTE WHERE APP_ITEM.ITEMCODE = APP_PRECIO_CLIENTE.ITEMCODE AND APP_ITEM.EMPRESA = APP_PRECIO_CLIENTE.EMPRESA AND APP_PRECIO_CLIENTE.CARDCODE = '"+$("#opt_ListaCliente").val()+"' ORDER BY APP_PRECIO_CLIENTE.DOCDATE LIMIT 1),'0') ULTCANTVENT, APP_ITEM.* FROM APP_ITEM WHERE APP_ITEM.EMPRESA='"+masterEmpresa.trim()+"' AND APP_ITEM.ITEMCODE IN("+ITEMCODE+")", function (obj) {
             var strPlantilla = $("#ItemPlantilla").html();
             for (var i = 0; i < obj.rows.length; i++) 
@@ -238,16 +239,19 @@
             for (var i = 0; i < tdCount.length; i++) {
                 tdCount[i].innerHTML = "# "+(i+1)+" - ";
             }
+            $("#loader_sys_btn_hide").click();
       }); 
   }
 
   function fn_DeleteItemList(trId){
+      $("#loader_sys_btn_show").click();
       $("#"+trId).remove();
       var tdCount = document.getElementsByName("tdCount");
       for (var i = 0; i < tdCount.length; i++) {
           tdCount[i].innerHTML = "# "+(i+1)+" - ";
       }
       $("#tagLineasPedido").collapsibleset( "refresh" );
+      $("#loader_sys_btn_hide").click();
   }
 
 </script>
