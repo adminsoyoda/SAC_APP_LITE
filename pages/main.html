@@ -51,34 +51,42 @@
     
 </script>
 
-<div data-role="main" id="a">
-    <div data-role="header" class="cus-lg-header cus-pri-ele" data-position="fixed" data-theme="a">
-        <a href="#inside" class="cus-btn-lg" data-icon="bars" data-iconpos="notext" style="border-color: #003763">Menu</a>
-        <div class="center-div" style="text-align: right;">
-            <a href="#" class="ui-btn ui-icon-delete ui-corner-all cus-war-ele"><strong id="AppGestorEmpresa"></strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="#" onclick="SyncProcess(true);" class="ui-btn ui-icon-refresh ui-btn-icon-notext ui-corner-all cus-btn-lg cus-dan-ele" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="#" onclick="CerrarSesion();" class="ui-btn ui-icon-power ui-btn-icon-notext ui-corner-all cus-btn-lg" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
-    </div>
-
-    <div data-role="panel" id="inside" data-position="left" data-display="overlay" data-theme="a">
-        <ul data-role="listview" style="background-size: 200px;">
-            
-            <li data-icon="home">
-                <a class="cus-lg " style="" href="#" data-rel="close">
-                    <div>
-                        <p style="text-overflow: ellipsis;font-size: 16px">
-                            <img src="public/img/Logo.png" width="50" style="border-radius: 3em;">
-                            <strong id="AppGestorName"></strong>
-                        <p>
-                    </div>
-                </a>
-            </li>
-            <li data-icon="clock"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Rutero</div></a></li>
-            <li data-icon="calendar"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Gestion</div></a></li>
-            <li data-icon="search"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Informes</div></a></li>
-            <li data-icon="user"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Hola</div></a></li>
-        </ul>
+<div data-role="header" class="cus-lg-header cus-pri-ele" data-position="fixed" data-theme="a">
+    <a href="#inside" class="cus-btn-lg" data-icon="bars" data-iconpos="notext" style="border-color: #003763">Menu</a>
+    <div class="center-div" style="text-align: right;">
+        <a href="#" class="ui-btn ui-icon-delete ui-corner-all cus-war-ele"><strong id="AppGestorEmpresa"></strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="#" onclick="SyncProcess(true);" class="ui-btn ui-icon-refresh ui-btn-icon-notext ui-corner-all cus-btn-lg cus-dan-ele" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="#" onclick="CerrarSesion();" class="ui-btn ui-icon-power ui-btn-icon-notext ui-corner-all cus-btn-lg" style="border-color: #003763;top: 16px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
 </div>
+
+<div role="main" class="ui-content jqm-content jqm-fullwidth">
+
+    <h1>Panel fixed positioning</h1>
+
+    <p>This is a typical page that has two buttons in the header bar that open panels. The left panel has the push display mode. The right panel opens as overlay. For both panels we set <code>data-position-fixed="true"</code>. We also set position fixed for the header and footer on this page.</p>
+
+    <p>The left panel contains a long menu to demonstrate that the framework will check the panel contents height and unfixes the panel so its content can be scrolled. In the right panel there is a short form that shows the fixed positioning.</p>
+
+</div>
+
+<div data-role="panel" id="inside" data-position="left" data-display="overlay" data-theme="a">
+    <ul data-role="listview" style="background-size: 200px;">
+        <li data-icon="home">
+            <a class="cus-lg " style="" href="#" data-rel="close">
+                <div>
+                    <p style="text-overflow: ellipsis;font-size: 16px">
+                        <img src="public/img/Logo.png" width="50" style="border-radius: 3em;">
+                        <strong id="AppGestorName"></strong>
+                    <p>
+                </div>
+            </a>
+        </li>
+        <li data-icon="clock"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Rutero</div></a></li>
+        <li data-icon="calendar"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Gestion</div></a></li>
+        <li data-icon="search"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Informes</div></a></li>
+        <li data-icon="user"><a class="cus-lg cus-color-white" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Hola</div></a></li>
+    </ul>
+</div>
+
           
