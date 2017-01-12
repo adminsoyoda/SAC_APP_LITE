@@ -1,0 +1,70 @@
+<script type="text/javascript">
+	
+	function fn_ListaItemsSearch(evento) {
+        var key = validaEvento(evento);
+        var filtro = "";
+
+        if ($('#idExtAprov').is(":checked"))
+        {
+          filtro = "Y";
+        }
+
+        if (key == 13) {
+            hideKeyboard(evento);        
+            $("#loader_sys").show();
+            var ITEMCODE=$("#tagSearchITEMCODE").val();
+            var ITEMNAME=$("#tagSearchITEMNAME").val();
+            var ITMSGRPNAM=$("#tagSearchITMSGRPNAM").val();
+
+            BDConsultaOBJ("SELECT ITEMCODE,ITEMNAME,ITMSGRPNAM,ONHAND,PRICE,SALUNITMSR,SALPACKMSR FROM APP_ITEM WHERE EMPRESA='" + masterEmpresa.trim() + "'  AND (ITEMCODE LIKE '%" + ITEMCODE + "%' OR '" + ITEMCODE + "'=ITEMCODE)  AND (ITEMNAME LIKE '%" + ITEMNAME + "%' OR '" + ITEMNAME + "'=ITEMNAME) AND (ITMSGRPNAM LIKE '%" + ITMSGRPNAM + "%' OR '" + ITMSGRPNAM + "'= ITMSGRPNAM) AND APRO_EXTERNO LIKE '%"+ filtro +"%' "+ ((filtro == "")? " AND ( CAST(ONHAND AS INT)>0 OR LIST_MAT LIKE '%Y%' ) " : "") +" ORDER BY ITEMCODE ASC LIMIT 50;", function (obj) {
+                  
+                  var data="<li data-role='list-divider'>Items Encontrados</li><li data-role='list-divider'><table class='table table-hover table-striped' style='width: 100%'><tbody> <tr><td>&nbsp;&nbsp;&nbsp;</td><td><strong class='text-yellow'>Codigo</strong></td><td><strong class='text-yellow'>Descripción</strong></td><td><strong class='text-yellow'>Linea</strong></td><td><strong class='text-yellow'>Precio</strong></td><td><strong class='text-yellow'>Un</strong></td><td></td></tr></tbody></table></li>";
+
+                  for (var i = 0; i < obj.rows.length; i++) {
+                      var row = obj.rows.item(i);
+
+                      data = data +"<li><input name='"+i+"' id='"+i+"' type='checkbox'><label for='"+i+"' style='padding-right: 3px;'><table class='table table-hover table-striped' style='width: 100%'><tbody> <tr><td id='tdCode"+i+"'>" + row.ITEMCODE + "</td><input type='hidden' id='tdOnhand"+i+"' value = '"+row.ONHAND+"'/><td>" + row.ITEMNAME + "</td><td>" + row.ITMSGRPNAM + "</td><td>" + parseFloat(row.PRICE).toFixed(AppDecimales) + "</td><td>" + row.SALUNITMSR + "</td><td> <button type='button' data-icon='gear' data-iconpos='right' data-mini='true' data-inline='true'  onclick='fn_FichaItem(\"" + row.ITEMCODE + "\")'>Ficha</button> </td></tr></tbody></table></label></li>";
+                  };
+                  $("#tagItemsSearch_Lineas").html(data);
+                  $("#loader_sys").hide();
+            });
+        }
+    }
+
+</script>
+
+<div role="container" id="container" style="padding: 15px;background: white;">
+	<div class="ui-grid-a ui-responsive">
+	    <div class="ui-block-a">
+	    	<a href="#popupMenuItem" data-rel="popup" data-transition="slideup" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-plus ui-btn-inline" onclick="">Agregar Item</a>
+	    </div>
+	    <div class="ui-block-b">
+	    	<input name="checkbox-v-2a" id="checkbox-v-2a" type="checkbox"><label for="checkbox-v-2a" style="padding-right: 3px;">Aprovisionamiento Externo</label>
+	    </div>
+	</div>
+
+	<button type="button" data-icon="gear" data-iconpos="right" data-mini="true" data-inline="true" id="add">Add</button>	
+	<button type="button" data-icon="plus" data-iconpos="right" data-mini="true" data-inline="true" id="expand">Expand last</button>
+	<button type="button" data-icon="minus" data-iconpos="right" data-mini="true" data-inline="true" id="collapse">Collapse last</button>
+	<div data-role="collapsibleset" data-content-theme="a" data-iconpos="right" id="set">
+	    <div data-role="collapsible" id="set1" data-collapsed="true">
+	        <h3>Section 1</h3>
+	        <p>I'm the collapsible content.</p>
+	    </div>
+	</div>
+</div>
+
+<div data-role="popup" id="popupMenuItem" data-overlay-theme="a" data-theme="a" style="width: 100%;height: 100%;" data-dismissible="false">
+    <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right cus-btn-lg">Close</a>
+    <div style="padding: 20px 20px 0px 20px">
+    	<input type="text" id="tagSearchITEMCODE" value="" placeholder="Codigo de Item" onkeypress="fn_ListaItemsSearch(event)">
+    	<input type="text" id="tagSearchITEMNAME" value="" placeholder="Nombre de Item" onkeypress="fn_ListaItemsSearch(event)">
+    	<input type="text" id="tagSearchITMSGRPNAM" value="" placeholder="Linea de Item" onkeypress="fn_ListaItemsSearch(event)">
+    	<a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-plus" onclick="fn_SeleccionItemsMultiple();">Agregar Item</a>
+    </div>
+    <div style="overflow-y: scroll;height: 60%;padding: 0px 20px 0px 20px" >
+        <ul data-role="listview" data-inset="true" id="tagItemsSearch_Lineas">
+            
+        </ul>
+    </div>
+</div>
