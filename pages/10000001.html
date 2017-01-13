@@ -21,7 +21,7 @@
         }
 
         if (key == 13) {
-            //hideKeyboard(evento);        
+            hideKeyboard(evento);        
             $("#loader_sys_btn_show").click();
             var ITEMCODE=$("#tagSearchITEMCODE").val();
             var ITEMNAME=$("#tagSearchITEMNAME").val();
@@ -135,7 +135,7 @@
                     }
 
                     console.log(i_LINES);
-                    
+
                     var itemDetail="";
                     itemDetail= "<div data-role='collapsible' id='tr~'' data-collapsed='true'>"+strPlantilla+"</div>";
                     itemDetail= itemDetail.replace(/~/g, i_LINES);
