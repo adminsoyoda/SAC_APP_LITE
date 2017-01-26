@@ -1,0 +1,2603 @@
+<style type="text/css">
+    
+</style>
+
+<script type="text/javascript">
+    var LINEACOB = 0;
+    var LINEACUOTA = 0;
+    var LINEACUOTAMOT = 0;
+    var LINEAFACTRET = 0;
+
+    (function()
+    {
+        fn_fechaformato(new Date(),0,function(RETORNO){
+            $("#App_GestTitleCob").html(RETORNO);
+        });
+        setTimeout(function() {
+            fn_CargarMedioPago();    
+        }, 50);
+    })();
+
+    function fn_CargarMedioPago()
+    { 
+        $("#loader_sys_btn_show").click();
+        $("#btnEnviaCob").hide();
+        LINEACOB=0;
+        var strCobPlantilla="";
+        $("#tagLineasCobranza").html("");
+
+        $("#idValorSel").html("  0");
+        $("#idCantSel").html("  0");
+        $("#idValorTot").html("  0");
+        $("#idCantTot").html("  0");
+
+        BDConsultaOBJ("SELECT * FROM APP_COBRANZA WHERE CARDCODE = '"+CARDCODE+"' AND EMPRESA='"+masterEmpresa+"'  AND SYNCESTADO = 0 ORDER BY CREATEDATE ASC", function (obj) {
+            var total=0;var cant=0;
+            for (var i = 0; i < obj.rows.length; i++) 
+            { 
+                var row = obj.rows.item(i);
+                
+                var strCabCob="";
+                strCabCob=strCabCob+"<li id='~'><div data-role='controlgroup' data-type='horizontal' style='overflow-x:scroll'><input name='tdCHKENVIA~' onclick='fn_CalculaSelMedPag();' id='tdCHKENVIA~' type='checkbox'><label "+ ( (row.ESTADO != "N" )? "style='padding-right: 3px;text-shadow: none;'": " style='color:#fff;background-color:#dd4b39;padding-right: 3px;text-shadow: none;' onclick=\"alert('# Recibo: "+0+"\\nMotivo Negacion : "+0+".\\nObservacion Negacion: "+0+".')\" " ) +" for='tdCHKENVIA~' style=''><table class='' style='width: 100%'><tbody>"
+                strCabCob=strCabCob+"<tr>";
+                strCabCob=strCabCob+"<td style='width: 10%;padding: 7px;'><h4 class='cus-td-head-yellow'><strong># Recibo</strong></h4></td>";
+                strCabCob=strCabCob+"<td style='width: 15%;padding: 7px;'><h4 class='cus-td-head-yellow'><strong>Medio Pago</strong></h4></td>";
+                strCabCob=strCabCob+"<td style='width: 11%;padding: 7px;'><h4 class='cus-td-head-yellow'><strong>Numero</strong></h4></td>";
+                strCabCob=strCabCob+"<td style='width: 10%;padding: 7px;'><h4 class='cus-td-head-yellow'><strong>Valor</strong></h4></td>";
+                strCabCob=strCabCob+"<td style='width: 10%;padding: 7px;'><h4 class='cus-td-head-yellow'><strong>Valor Rec.</strong></h4></td>";
+                strCabCob=strCabCob+"<td style='width: 10%;padding: 7px;'><h4 class='cus-td-head-yellow'><strong>Saldo Favor</strong></h4></td>";
+                strCabCob=strCabCob+"</tr>";
+                strCabCob=strCabCob+"<tr >";
+                strCabCob=strCabCob+"<td align='center' style='width: 10%;padding: 7px;'><span id='tdRECIBOID~'></span></td>";
+                strCabCob=strCabCob+"<td align='center' style='width: 15%;padding: 7px;'><span id='tdMEDIOPAGOCAJA~'></span></td>";
+                strCabCob=strCabCob+"<td align='center' style='width: 11%;padding: 7px;'><span id='tdNUMRECCAJA~'></span></td>";
+                strCabCob=strCabCob+"<td align='center' style='width: 10%;padding: 7px;'><span id='tdVALRECCAJA~'></span></td>";
+                strCabCob=strCabCob+"<td align='center' style='width: 10%;padding: 7px;'><span id='tdVALRECMED~'></span></td>";
+                strCabCob=strCabCob+"<td align='center' style='width: 10%;padding: 7px;'>";
+                strCabCob=strCabCob+"   <span id='tdVALFAVOR~'></span>";
+                strCabCob=strCabCob+"   <span id='tdCANTLINEAMEDPAG~' style='display:none'></span>";
+                strCabCob=strCabCob+"   <span id='tdIDMEDPAG~' style='display:none'></span>";
+                strCabCob=strCabCob+"   <span id='tdFECHAMEDPAG~' style='display:none'></span>";
+                strCabCob=strCabCob+"   <span id='tdBANCOMEDPAG~' style='display:none'></span>";
+                strCabCob=strCabCob+"   <span id='tdBANCOCUENTAMEDPAG~' style='display:none'></span>";
+                strCabCob=strCabCob+"   <span id='tdMOTIVOSMEDPAG~' style='display:none'></span>";
+                strCabCob=strCabCob+"   <span id='tdIDRECIBO~' style='display:none'></span>";
+                strCabCob=strCabCob+"</td>";      
+                strCabCob=strCabCob+"</tr>";
+                strCabCob=strCabCob+"</tbody></table></label>";
+                strCabCob=strCabCob+"<div style='display: inline-block;'>";
+                strCabCob=strCabCob+"<a href='#' onclick=\"fn_EditCobranza('ƒ')\" class='ui-btn ui-shadow cus-btn-lg-icon ui-icon-edit ui-btn-icon-notext' style='height: 32px;'></a>";
+                strCabCob=strCabCob+"<a href='#' onclick=\"fn_DeleteItemListCob('ƒ')\" class='ui-btn ui-shadow cus-btn-lg-icon ui-icon-delete ui-btn-icon-notext' style='height: 32px;'></a>";
+                strCabCob=strCabCob+"</div>";
+                strCabCob=strCabCob+"</div></li>";
+
+                strCabCob=strCabCob.replace(/~/g,LINEACOB);
+                strCabCob=strCabCob.replace(/ƒ/g,row.RECIBO);
+
+                $("#tagLineasCobranza").append(strCabCob);
+                $('#tagLineasCobranza').listview('refresh');
+                $("#tagLineasCobranza").trigger("create");
+
+                $("#tdRECIBOID"+LINEACOB).html(row.RECIBO);
+                $("#tdIDRECIBO"+LINEACOB).html(row.RECIBO);
+                $("#tdMEDIOPAGOCAJA"+LINEACOB).html(row.MEDIOPAGO);
+                $("#tdNUMRECCAJA"+LINEACOB).html(((row.IDMEDPAGO != "4") ? row.NUMEROREF : row.RETENCION ));
+                $("#tdVALRECCAJA"+LINEACOB).html(parseFloat(row.VALOR).toFixed(2));
+                $("#tdVALRECMED"+LINEACOB).html((row.VALOR-row.SALDOFAVOR).toFixed(2));
+                $("#tdVALFAVOR"+LINEACOB).html(parseFloat(row.SALDOFAVOR).toFixed(2));
+                total = total + row.VALOR;
+                cant = cant + 1;                
+                LINEACOB = LINEACOB + 1;
+            }
+            
+            if(obj.rows.length>0)
+            {
+                $("#btnEnviaCob").show();
+            }
+
+            $("#idValorTot").html("  "+total.toFixed(2));
+            $("#idCantTot").html("  "+cant);
+            $("#loader_sys_btn_hide").click();
+
+        });
+    }
+
+    function fn_OpenCaja()
+    {
+        fn_CambiarPage('containerCobPri', 'containerCobPro');
+        setTimeout(function(){
+            fn_MostrarOption();
+        },100);
+    }
+
+    function fn_CloseCaja()
+    {   
+        fn_nuevoMedioPago();
+        fn_CambiarPage('containerCobPro','containerCobPri');
+    }
+
+    function fn_MostrarOption()
+    {
+        var elemet0 = document.getElementsByName("cheque");
+        for (var i = 0; i <elemet0.length; i++) {elemet0[i].style.display="none";};
+        var elemet1 = document.getElementsByName("transf");
+        for (var j = 0; j <elemet1.length; j++) {elemet1[j].style.display="none";};
+        var elemet2 = document.getElementsByName("transfcheque");
+        for (var k = 0; k <elemet2.length; k++) {elemet2[k].style.display="none";};
+        var elemet3 = document.getElementsByName("allValue");
+        for (var l = 0; l <elemet3.length; l++) {elemet3[l].style.display="none";};
+        var elemet4 = document.getElementsByName("retencion");
+        for (var m = 0; m <elemet4.length; m++) {elemet4[m].style.display="none";};
+
+        $("#allValue").hide();
+
+        $("#bodyListCuota").hide();
+        $("#bodyListCuotaRet").hide();
+
+        $("#btnSelFactura").hide();
+        $("#btnBorraSug").hide();
+
+        setTimeout(function(){
+            switch ($("#tagMedioPago").val()) 
+            {
+                case "1":
+                    fn_fechaformato(new Date(),2,function(RETORNO){$("#chFecha").val(RETORNO);});
+                    SoloNumeroCantidad("chNumCheque");$("#chNumCheque").val("");
+                    SoloNumero("chtrefValor");$("#chtrefValor").val("");
+                    $("#chtrCuenta").html("");
+                    $("#chtrCuenta").prop( "disabled", true );
+
+                    for (var i = 0; i <elemet0.length; i++) {elemet0[i].style.display="block";};
+                    for (var k = 0; k <elemet2.length; k++) {elemet2[k].style.display="block";};
+                    for (var l = 0; l <elemet3.length; l++) {elemet3[l].style.display="block";};
+
+                    $("#chtrBanco").html("<option value='' selected>Seleccionar Banco</option>");
+                    BDConsultaOBJ("SELECT * FROM APP_CLIENTE_BANCO WHERE EMPRESA='"+masterEmpresa.trim()+"' AND CARDCODE = '"+ CARDCODE +"' GROUP BY BANKNAME ORDER BY BANKNAME ASC", function (obj) {
+                        for (var i = 0; i < obj.rows.length; i++) {
+                            var row = obj.rows.item(i);
+                            $("#chtrBanco").append("<option value='"+row.BANKCODE+"'>"+row.BANKNAME+"</option>");
+                        }  
+                        $('#chtrBanco').selectmenu('refresh', true);
+                    });
+                    $("#bodyListCuota").show();
+                    break;
+                case "2":
+                    fn_fechaformato(new Date(),2,function(RETORNO){$("#tranFecha").val(RETORNO);});
+                    SoloNumeroCantidad("tranRef");$("#tranRef").val("");
+                    SoloNumero("chtrefValor");$("#chtrefValor").val("");
+                    $("#chtrCuenta").html("");
+                    $("#chtrCuenta").prop( "disabled", true );
+
+                    for (var j = 0; j <elemet1.length; j++) {elemet1[j].style.display="block";};
+                    for (var k = 0; k <elemet2.length; k++) {elemet2[k].style.display="block";};
+                    for (var l = 0; l <elemet3.length; l++) {elemet3[l].style.display="block";};
+
+                    $("#chtrBanco").html("<option value='' selected>Seleccionar Banco</option>");
+                    BDConsultaOBJ("SELECT * FROM APP_BANCO WHERE EMPRESA='"+masterEmpresa.trim()+"' AND ACCOUNT != 'NO' GROUP BY BANKNAME ORDER BY BANKNAME ASC", function (obj) {
+                        for (var i = 0; i < obj.rows.length; i++) {
+                            var row = obj.rows.item(i);
+                            $("#chtrBanco").append("<option value='"+row.BANKCODE+"'>"+row.BANKNAME+"</option>");
+                        }  
+                        $('#chtrBanco').selectmenu('refresh', true);
+                    });
+                    $("#bodyListCuota").show();
+                    break;
+                case "3":
+                    SoloNumero("chtrefValor");$("#chtrefValor").val("");
+                    for (var l = 0; l <elemet3.length; l++) {elemet3[l].style.display="block";};
+                    $("#chtrBanco").html("");$("#chtrCuenta").html("");
+                    $("#bodyListCuota").show();
+                    break;
+                case "4":
+                    var NDR = new Date();
+                    fn_fechaformato(new Date(),2,function(RETORNO){$("#retFechEmi").val(RETORNO);});
+                    fn_fechaformato(new Date(),2,function(RETORNO){$("#retFechVcto").val(RETORNO);});
+                    SoloNumeroCantidad("retPtoEmi");$("#retPtoEmi").val("");
+                    SoloNumeroCantidad("retPtoEst");$("#retPtoEst").val("");
+                    SoloNumeroCantidad("retNumRet");$("#retNumRet").val("");
+                    SoloNumeroCantidad("retNumAuto");$("#retNumAuto").val("");
+                    SoloNumero("retValTotal");$("#retValTotal").val("0.00");$("#chtrBanco").html("");$("#chtrCuenta").html("");
+
+                    for (var m = 0; m <elemet4.length; m++) {elemet4[m].style.display="block";};
+                    $("#bodyListCuotaRet").show();
+                    fn_cargaFacturaRet();
+                    fn_TipoRetencion();
+                    break;
+            }
+              fn_nuevoMedioPago(); 
+        },100);
+    }
+
+    function fn_nuevoMedioPago()
+    {
+        $("#AppCuotaLista").html("");
+        $("#chtrefSaldoFavor").val("0");
+        $("#filVenc").prop("disabled",true);
+        $("#filProt").prop("disabled",true);
+        $("#filTod").prop("disabled",true);
+        $("#chtrefValor").prop("disabled",false);
+        $("#tagMedioPago").prop( "disabled", false );
+        $("#btnCargaCuota").prop("disabled",false);
+        $("#btnCancelaCuota").prop("disabled",true);
+
+        $("#filVenc").prop("checked", false);
+        $("#filTod").prop("checked", true);
+
+        $("#totCuota").html("0");
+        $("#totReca").html("0");
+        $("#totPend").html("0");
+
+        $("#divIDRECIBO").html("");
+
+        if($("#tagMedioPago").val()!="4")
+        {
+            $("#bodyListCuota").show();
+            $("#bodyListCuotaFiltro").show();
+            $("#bodyListCuotaTotales").show();
+        }
+    }
+
+    function fn_selCuenta()
+    {
+        $("#chtrCuenta").html("");
+        if($("#tagMedioPago").val() =="1"){
+            BDConsultaOBJ("SELECT * FROM APP_CLIENTE_BANCO WHERE EMPRESA='"+masterEmpresa.trim()+"' AND CARDCODE = '"+ CARDCODE +"' AND BANKCODE = '"+ $('#chtrBanco').val() +"' ORDER BY ACCOUNT ASC", function (obj) {
+                for (var i = 0; i < obj.rows.length; i++) 
+                {
+                    var row = obj.rows.item(i);
+                    $("#chtrCuenta").append("<option value='"+row.ACCOUNT+"'>"+row.ACCOUNT+"</option>");
+                }  
+                $('#chtrCuenta').selectmenu('refresh', true);
+            });
+        }
+
+        if($("#tagMedioPago").val()=="2"){
+            BDConsultaOBJ("SELECT * FROM APP_BANCO WHERE EMPRESA='"+masterEmpresa.trim()+"' AND ACCOUNT != 'NO' AND BANKCODE = '"+ $('#chtrBanco').val() +"' ORDER BY ACCOUNT ASC", function (obj) {
+                for (var i = 0; i < obj.rows.length; i++) 
+                {
+                    var row = obj.rows.item(i);
+                    $("#chtrCuenta").append("<option value='"+row.ACCOUNT+"'>"+row.ACCOUNT+"</option>");
+                }  
+                $('#chtrCuenta').selectmenu('refresh', true);
+            });
+        }
+        $('#chtrCuenta').selectmenu('enable');   
+    }
+
+    function fn_cargaCuota()
+    {
+        $("#AppCuotaLista").html("");
+        $("#loader_sys_btn_show").click();
+        var valorMedioPago = parseFloat(($("#chtrefValor").val()=="") ? "0" : $("#chtrefValor").val());
+        var nuevoValor = 0;
+
+        $("#btnSelFactura").hide();
+        $("#btnBorraSug").hide();
+
+        if( valorMedioPago <= 0 )
+        {
+            alert("Debe de ingresar un valor en el medio de pago!");
+            $("#loader_sys_btn_hide").click();
+            return;
+        }
+
+        switch ($("#tagMedioPago").val()) 
+        {
+            case "1":
+                if($("#chNumCheque").val() == "")
+                {
+                    alert("Debe de ingresar el numero de Cheque!");
+                    fn_focus('chNumCheque');
+                    $("#loader_sys_btn_hide").click();
+                    return;
+                }
+
+                var VARNUMREF = $("#chNumCheque").val();
+                if( VARNUMREF.indexOf('.') >= 0)
+                {
+                    alert("El numero de cheque no puede tener simbolos!");
+                    fn_focus('chNumCheque');
+                    $("#loader_sys_btn_hide").click();
+                    return;
+                }
+
+                if( parseInt($("#chNumCheque").val()) <= 0)
+                {
+                    alert("El numero de cheque no puede ser 0!");
+                    fn_focus('chNumCheque');
+                    $("#loader_sys_btn_hide").click();
+                    return;
+                }
+
+                if($("#chtrBanco").val() == "")
+                {
+                    alert("Debe de seleccionar el banco al cual pertenece el cheque!");
+                    fn_focus('chtrBanco');
+                    $("#loader_sys_btn_hide").click();
+                    return;
+                }
+                if($("#chtrCuenta").val() == "")
+                {
+                    alert("Debe de seleccionar la cuenta a la cual pertenece el cheque!");
+                    fn_focus('chtrCuenta');
+                    $("#loader_sys_btn_hide").click();
+                    return;
+                }
+
+                $("#btnSelFactura").show();
+                $("#btnBorraSug").show();
+                break;
+            case "2":
+                if($("#tranRef").val() == "")
+                {
+                    alert("Debe de ingresar el numero de Referencia de la Transferencia!");
+                    fn_focus('tranRef');
+                    $("#loader_sys_btn_hide").click();
+                    return;
+                }
+
+                var VARNUMREF = $("#tranRef").val();
+                if( VARNUMREF.indexOf('.') >= 0)
+                {
+                    alert("El numero de referencia no puede tener simbolos!");
+                    fn_focus('tranRef');
+                    $("#loader_sys_btn_hide").click();
+                    return;
+                }
+
+                if( parseInt($("#tranRef").val()) <= 0)
+                {
+                    alert("El numero de referencia no puede ser 0!");
+                    fn_focus('tranRef');
+                    $("#loader_sys_btn_hide").click();
+                    return;
+                }
+
+                if($("#chtrBanco").val() == "")
+                {
+                    alert("Debe de seleccionar el banco al cual se realizara la Transferencia!");
+                    fn_focus('chtrBanco');
+                    $("#loader_sys_btn_hide").click();
+                    return;
+                }
+                if($("#chtrCuenta").val() == "")
+                {
+                    alert("Debe de seleccionar la cuenta a la cual se realizara la Transferencia!");
+                    fn_focus('chtrCuenta');
+                    $("#loader_sys_btn_hide").click();
+                    return;
+                }
+
+                $("#btnSelFactura").show();
+                $("#btnBorraSug").show();
+                break;
+            case "3":
+                $("#btnSelFactura").show();
+                $("#btnBorraSug").show();
+                break;
+        }
+
+        var filtro = "";
+        var strTableCuota="<tr style='background-color:#FFF;font-size: 16px;'><td></td><td><strong class='text-blue'>NumDoc</strong></td><td><strong class='text-blue'>FechaDoc</strong></td><td><strong class='text-blue'>FechaVenc</strong></td><td><strong class='text-blue'># Cuota</strong></td><td><strong class='text-blue'>Saldo Cuota</strong></td><td style='width: 12%;'><strong class='text-blue'>Valor Reca</strong></td><td><strong class='text-blue'>Saldo Pend</strong></td> <td style='display: none;'></td> <td style='display: none;'></td> </tr>";
+
+        var elemet0 = document.getElementsByName("filtro");
+        for (var j = 0; j <elemet0.length; j++) 
+        {
+            if(elemet0[j].checked==true){
+                filtro = elemet0[j].value;
+            }
+        };
+
+        $("#totCuota").html("0");
+        $("#totReca").html("0");
+        $("#totPend").html("0");
+
+        var strCuota="";
+
+        if(filtro=="P"){
+            strCuota="SELECT DOCNUM, TIPODOC, FECHADOC, FECHAVENC, CUOTA, BASEREF, MONTO_CUOTA, (SALDO_CUOTA - RECAUDADO) SALDO_CUOTA,SALDO_CUOTA TOTALCUOTA , ESTADO_DEUDA, CARDNAME, CARDCODE, SLPNAME, PYMNTGROUP, SLPCODE, EMPRESA FROM APP_CLIENTE_CUOTA WHERE EMPRESA='"+masterEmpresa.trim()+"' AND (SALDO_CUOTA - RECAUDADO) > 0  AND ESTADO != 'C' AND MOTIVO = '0' AND CARDCODE= '"+ CARDCODE +"' AND TIPODOC IN('CANJE','PROTESTO','NOTA DEBITO') ORDER BY FECHAVENC,DOCNUM,CUOTA ASC";
+        }else{
+            strCuota="SELECT DOCNUM, TIPODOC, FECHADOC, FECHAVENC, CUOTA, BASEREF, MONTO_CUOTA, (SALDO_CUOTA - RECAUDADO) SALDO_CUOTA,SALDO_CUOTA TOTALCUOTA , ESTADO_DEUDA, CARDNAME, CARDCODE, SLPNAME, PYMNTGROUP, SLPCODE, EMPRESA FROM APP_CLIENTE_CUOTA WHERE EMPRESA='"+masterEmpresa.trim()+"' AND (SALDO_CUOTA - RECAUDADO) > 0  AND ESTADO != 'C' AND MOTIVO = '0' AND CARDCODE= '"+ CARDCODE +"' "+ ((filtro=="V")? " AND ESTADO_DEUDA='VENCIDA' " : "") +" ORDER BY FECHAVENC,DOCNUM,CUOTA ASC";
+        }
+
+        LINEACUOTA = 0;
+        BDConsultaOBJ(strCuota, function (obj) {
+            for (var i = 0; i < obj.rows.length; i++) 
+            {
+                var row = obj.rows.item(i);
+
+                var residuo = valorMedioPago - parseFloat(parseFloat(row.SALDO_CUOTA).toFixed(2));
+
+                var valreca = 0;
+                var valpend = 0;
+
+                if(residuo >= 0){
+                    valreca = parseFloat(parseFloat(row.SALDO_CUOTA).toFixed(2));
+                    valpend = "0.00";
+                    valorMedioPago = residuo;
+                }else{
+                    valreca = valorMedioPago.toFixed(2);
+                    valpend = (residuo * (-1) ).toFixed(2);
+                    valorMedioPago = 0.00;
+                }
+
+                var arrCuota = row.CUOTA.split("/");
+                var newCuota = arrCuota[1] + "/" + arrCuota[0];
+
+                strTableCuota=strTableCuota+"<tr style='background-color: "+((valreca > 0)?"#d6d4d4":"#FFF")+" ;font-size: 18px;height: 70px;' id='trLineaCuota"+i+"'>";
+                strTableCuota=strTableCuota+"<td style='padding-top: 10px;'>"+((row.ESTADO_DEUDA=="VENCIDA")? "<a href='#' class='ui-btn ui-shadow ui-corner-all ui-icon-nada ui-btn-icon-notext cus-dan-ele'></a>":"<a href='#' class='ui-btn ui-shadow ui-corner-all ui-icon-nada ui-btn-icon-notext cus-suc-ele'></a>")+"</td>";
+                strTableCuota=strTableCuota+"<td id='tdDocNum"+i+"' style='padding-top: 10px;'>"+row.DOCNUM +"-"+row.TIPODOC+"</td>";
+                strTableCuota=strTableCuota+"<td id='tdFecDoc"+i+"' style='padding-top: 10px;'>"+row.FECHADOC+"</td>";
+                strTableCuota=strTableCuota+"<td id='tdFecVen"+i+"' style='padding-top: 10px;'>"+row.FECHAVENC+"</td>";
+                strTableCuota=strTableCuota+"<td id='tdCuota"+i+"' style='padding-top: 10px;'>"+ newCuota +"</td>";
+                strTableCuota=strTableCuota+"<td id='tdTotalCuota"+i+"' style='display: none;'>"+row.TOTALCUOTA+"</td>";
+                strTableCuota=strTableCuota+"<td id='tdSalCu"+i+"' align='right' style='padding-top: 10px;'>"+parseFloat(row.SALDO_CUOTA).toFixed(2)+"</td>";
+                strTableCuota=strTableCuota+"<td id='tdReca"+i+"' align='right' ><input type='text' name='inputCuota' id='tdRecaInput"+i+"' style='width: 100%;text-align: right;height: 50px;width: 73px;' oninput='return fn_calcPendiente("+i+");' onblur='fn_encera("+i+");' onclick=\"fn_focus('tdRecaInput"+i+"')\" value='"+valreca+"' /></td>";
+                strTableCuota=strTableCuota+"<td id='tdPend"+i+"' style='padding-right: 15px;padding-top: 10px;' align='right'>"+valpend+"</td>";
+                strTableCuota=strTableCuota+"<td id='tdMotivo"+i+"' style='display: none;'></td> <td id='tdSR"+i+"' style='display: none;'></td>";
+                strTableCuota = strTableCuota + "<td id='tdBtnCopy" + i + "' style='padding: 5px;' align='right'><button class='cus-btn cus-btn-new cus-btn-pri' id='btnCancelaCuota' onclick='fn_CopySaldo("+i+")' title='Permite copiar el valor del saldo de la cuota sin digitacion...' style='height: 100%;width: 100%;'>↔</button></td>";             
+                strTableCuota=strTableCuota+"</tr>";
+               
+                LINEACUOTA = i;
+
+                $("#totCuota").html( (parseFloat($("#totCuota").html()) + parseFloat(row.SALDO_CUOTA)).toFixed(2) );
+                $("#totReca").html( (parseFloat($("#totReca").html()) + parseFloat(valreca)).toFixed(2) );
+                $("#totPend").html( (parseFloat($("#totPend").html()) + parseFloat(valpend)).toFixed(2) );
+
+            }  
+
+            if(valorMedioPago > 0){ $("#chtrefSaldoFavor").val(valorMedioPago.toFixed(2)); }else{ $("#chtrefSaldoFavor").val("0"); }
+
+            $("#AppCuotaLista").html(strTableCuota);
+
+            $("#btnCargaCuota").prop("disabled",true);
+            $("#btnCancelaCuota").prop("disabled",false);
+            
+            $("#chtrefValor").prop("disabled",true);
+            $("#filVenc").prop("disabled",false);
+            $("#filTod").prop("disabled",false);
+            $("#filProt").prop("disabled",false);
+            $("#loader_sys_btn_hide").click();
+
+            setTimeout(function(){
+                fn_SoloNumeros(); 
+                var arrayInput = document.getElementsByName("inputCuota");
+                for (var i = 0; i < arrayInput.length; i++) {
+                    $("#"+arrayInput[i].id).textinput();
+                }               
+            },100);
+        });
+    }
+
+    function fn_cancelaCargaCuota()
+    {
+        var res = confirm("Ya cuenta con un valor de medio de pago, para modificarlo todos los cambios que realizo se perderan. ¿Desea Continuar? ");
+        if(res == true)
+        {
+            $("#btnSelFactura").hide();
+            $("#btnBorraSug").hide();
+            fn_nuevoMedioPago();
+        }
+    }
+
+    function fn_SoloNumeros()
+    {
+        for (var i = 0; i <= LINEACUOTA; i++) {
+            if($("#tdRecaInput"+i).val() != undefined){
+                 SoloNumero("tdRecaInput"+i);
+            }
+        }
+    }
+
+    function fn_CopySaldo(id)
+    {
+        
+        var valor_saldo_total = parseFloat($("#chtrefSaldoFavor").val());
+        var valor_saldo_linea = parseFloat($("#tdSalCu"+id).html());
+        var valor_recau_linea = parseFloat($("#tdRecaInput"+id).val());
+        valor_saldo_total=valor_saldo_total+valor_recau_linea;
+        
+        if(valor_saldo_total>0 && valor_saldo_total>=valor_saldo_linea)
+        {
+            $("#tdRecaInput"+id).val(valor_saldo_linea);
+        }
+        
+        if(valor_saldo_total>0 && valor_saldo_total<valor_saldo_linea)
+        {
+            $("#tdRecaInput"+id).val(valor_saldo_total);
+        }
+
+        fn_encera(id);
+        fn_calcPendiente(id);
+    }
+
+    function fn_encera(tdId)
+    {
+        var recaudado = parseFloat(($("#tdRecaInput"+tdId).val()=="") ? "0" : $("#tdRecaInput"+tdId).val());
+        if(recaudado <= 0)
+        {
+            $("#tdRecaInput"+tdId).val("0.00");
+            $("#trLineaCuota"+tdId).css("background-color","#FFF");
+        }else
+        {
+            $("#trLineaCuota"+tdId).css("background-color","#d6d4d4");            
+        }
+    }
+
+    function fn_calcPendiente(tdId)
+    {
+        $("#tdMotivo"+tdId).html("");
+        $("#tdSR"+tdId).html("");
+
+        fn_verificarValor(function(RETORNO){
+            if(RETORNO)
+            {
+                var saldoCuota = parseFloat($("#tdSalCu"+tdId).html());
+                var recaudado = parseFloat(($("#tdRecaInput"+tdId).val()=="") ? "0" : $("#tdRecaInput"+tdId).val());
+                var pendiente = parseFloat(saldoCuota-recaudado);
+
+                if(pendiente < 0){
+                    alert("Lo recaudado no puede ser mayor al saldo!");
+                    $("#tdRecaInput"+tdId).val("0");
+                    $("#tdPend"+tdId).html(saldoCuota.toFixed(2));
+                }else{
+                    $("#tdPend"+tdId).html(pendiente.toFixed(2));
+                }
+            }
+            else
+            {   
+                alert("La suma de lo recaudado no puede ser mayor al valor del medio de pago!");
+                $("#tdRecaInput"+tdId).val("0");
+                $("#tdPend"+tdId).html($("#tdSalCu"+tdId).html());
+            }
+
+            fn_obtenTotalRec(function(RETORN){
+                var valorCaja = parseFloat(($("#chtrefValor").val()=="") ? "0" : $("#chtrefValor").val());
+                var saldoFavor= valorCaja - RETORN;
+                $("#chtrefSaldoFavor").val((saldoFavor > 0) ? saldoFavor.toFixed(2) : "0.00");
+            });
+
+            $("#totReca").html("0");
+            $("#totPend").html("0");
+
+            for (var i = 0; i <= LINEACUOTA; i++) {
+                if($("#tdRecaInput"+i).val() != undefined){
+                    $("#totReca").html( (parseFloat($("#totReca").html()) + parseFloat(($("#tdRecaInput"+i).val()=="") ? "0" : $("#tdRecaInput"+i).val())).toFixed(2) );
+                    $("#totPend").html( (parseFloat($("#totPend").html()) + parseFloat(($("#tdPend"+i).html()=="") ? "0" : $("#tdPend"+i).html())).toFixed(2) );
+                }
+            }
+
+        });
+    }
+
+    function fn_verificarValor(RETORNO)
+    {
+        var valorRecaudado = 0.00;
+        var valorCaja = 0;
+
+        fn_obtenTotalRec(function(RETORN){
+            valorRecaudado = parseFloat(RETORN);
+        });
+
+        valorCaja = parseFloat(($("#chtrefValor").val()=="") ? "0" : $("#chtrefValor").val());
+        var valorCuadre = valorCaja-valorRecaudado;
+        if(valorCuadre < 0){
+            RETORNO(false);
+        }else{
+            RETORNO(true);
+        }
+    }
+
+    function fn_obtenTotalRec(RETORNO)
+    {
+        var valorRecaudado = 0;
+        for (var i = 0; i <= LINEACUOTA; i++) {
+            if($("#tdRecaInput"+i).val() != undefined){
+                valorRecaudado = valorRecaudado + parseFloat(($("#tdRecaInput"+i).val()=="") ? "0" : $("#tdRecaInput"+i).val());
+            }
+        }
+        RETORNO(valorRecaudado.toFixed(2));
+    }
+
+    function fn_CalculaSelMedPag()
+    {
+        $("#idValorSel").html("0");
+        $("#idCantSel").html("0");
+        var total=0;var cant=0;
+                
+        for (var i = 0; i <= LINEACOB; i++) 
+        {   
+            if($("#tdIDRECIBO"+i).html() != undefined)
+            {
+                if( $("#tdCHKENVIA"+i).is(':checked'))
+                {
+                    total = total + parseFloat($("#tdVALRECCAJA"+i).html());
+                    cant = cant + 1;
+                }
+            }
+        }
+        $("#idValorSel").html("  "+total.toFixed(2));
+        $("#idCantSel").html("  "+cant);
+    }
+
+    function fn_selTodos()
+    {
+        if (LINEACOB > 0) {
+            if($("#chkTodos:first").is(':checked'))
+            {
+                for (var i = 0; i <= LINEACOB; i++) {
+                    if ($("#tdIDRECIBO" + i).html() != undefined) {
+                        $("#tdCHKENVIA" + i + ":first").prop("checked",true).checkboxradio("refresh");
+                    }
+                }
+            }
+            else
+            {
+                for (var i = 0; i <= LINEACOB; i++) {
+                    if ($("#tdIDRECIBO" + i).html() != undefined) {
+                        $("#tdCHKENVIA" + i + ":first").prop("checked",false).checkboxradio("refresh");
+                    }
+                }
+            }
+            fn_CalculaSelMedPag();
+        }
+        else {
+            alert("No existen registros de medios de pago!");
+            $("#chkTodos").prop( "checked", false );
+        }
+    }
+
+    function fn_DeleteItemListCob(recibo)
+    {
+        var res = confirm("Los datos de este medio de pago se eliminaran esta seguro que desea continuar?");
+        if(res)
+        {
+            $("#loader_sys").show();
+
+            BDConsulta("SELECT * FROM APP_COBRANZA WHERE RECIBO = '"+recibo+"' AND EMPRESA='"+masterEmpresa+"'  AND CARDCODE = '"+CARDCODE+"' AND SYNCESTADO = 0 ", function (obj1) {
+                if(obj1.ESTADO == 'N'){
+                    BDActualizacion("INSERT INTO APP_REGISTRO(QUERY,ESTADO,SYNCESTADO) VALUES('UPDATE TBL_COBRANZA SET NOTA = |El AC elimino este registro| WHERE RECIBO_APP=|"+obj1.RECIBO+"| AND IDUSUARIOVENDEDOR =|"+obj1.IDUSUARIOVENDEDOR+"| AND EMPRESA=|"+obj1.EMPRESA+"| AND CARDCODE=|"+obj1.CARDCODE+"| AND IDMEDPAGO=|"+obj1.IDMEDPAGO+"| AND VALOR=|"+obj1.VALOR+"| ','0','0')");
+                }
+            });
+
+            BDConsultaOBJ("SELECT * FROM APP_COBRANZA_DETALLE WHERE RECIBO = '"+recibo+"' AND EMPRESA='"+masterEmpresa+"'  AND CARDCODE = '"+CARDCODE+"' AND SYNCESTADO = 0 ORDER BY LINEA ASC", function (obj) {
+                if(obj.rows.length >0)
+                {
+                    for (var j = 0; j < obj.rows.length; j++) 
+                    {
+                        var row = obj.rows.item(j);
+                        BDActualizacion("UPDATE APP_CLIENTE_CUOTA SET RECAUDADO = ROUND(RECAUDADO -"+ row.TOTALAPLICADO +",2), ESTADO='A' WHERE DOCNUM = '"+ row.DOCNUM +"' AND TIPODOC= '"+ row.TIPODOC +"'  AND CUOTA = '"+ row.CUOTA +"' AND EMPRESA='"+masterEmpresa+"' AND CARDCODE = '"+CARDCODE+"';");
+
+                        if(row.IDMEDPAGO == "4")
+                        {
+                            BDActualizacion("UPDATE APP_CLIENTE_FACTURA SET ESTADO = 'A' WHERE DOCNUM = '"+ row.BASEREF +"' AND EMPRESA='"+masterEmpresa+"' AND CARDCODE = '"+CARDCODE+"';");
+                        }
+                    }
+                }
+
+                BDActualizacion("DELETE FROM APP_COBRANZA WHERE RECIBO = '"+recibo+"' AND EMPRESA='"+masterEmpresa+"'  AND CARDCODE = '"+CARDCODE+"'");
+                BDActualizacion("DELETE FROM APP_COBRANZA_DETALLE WHERE RECIBO = '"+recibo+"' AND EMPRESA='"+masterEmpresa+"'  AND CARDCODE = '"+CARDCODE+"'");
+
+                $("#loader_sys").hide();
+                fn_CargarMedioPago();
+            });
+        }
+    }
+
+    function fn_EditCobranza(recibo)
+    {
+        fn_CambiarPage('containerCobPri', 'containerCobPro');
+        $("#bodyListCuotaFiltro").hide();
+        $("#bodyListCuotaTotales").hide();
+        //$("#bodyListCuota").hide();
+        $("#chtrCuenta").prop( "disabled", false );
+        $("#divIDRECIBO").html(recibo);
+
+        $("#bodyListCuota").hide();
+        $("#bodyListCuotaRet").hide();
+        var elemet0 = document.getElementsByName("cheque");
+        for (var i = 0; i <elemet0.length; i++) {elemet0[i].style.display="none";};
+        var elemet1 = document.getElementsByName("transf");
+        for (var j = 0; j <elemet1.length; j++) {elemet1[j].style.display="none";};
+        var elemet2 = document.getElementsByName("transfcheque");
+        for (var k = 0; k <elemet2.length; k++) {elemet2[k].style.display="none";};
+        var elemet3 = document.getElementsByName("allValue");
+        for (var l = 0; l <elemet3.length; l++) {elemet3[l].style.display="none";};
+        var elemet4 = document.getElementsByName("retencion");
+        for (var m = 0; m <elemet4.length; m++) {elemet4[m].style.display="none";};
+
+        BDConsulta("SELECT * FROM APP_COBRANZA WHERE RECIBO = '"+recibo+"' AND CARDCODE = '"+CARDCODE+"' AND EMPRESA = '"+masterEmpresa+"';",function(obj){
+            $("#tagMedioPago").val(obj.IDMEDPAGO);
+            $("#tagMedioPago").prop( "disabled", true );
+
+            $("#chtrefValor").prop("disabled",true);
+            $("#btnCargaCuota").prop("disabled",true);
+            $("#btnCancelaCuota").prop("disabled",true);
+
+            setTimeout(function(){
+
+                switch ($("#tagMedioPago").val()) {
+                    case "1":
+                        $("#chFecha").val(obj.FECHAMEDPAGO);
+                        SoloNumeroCantidad("chNumCheque");
+                        $("#chNumCheque").val(obj.NUMEROREF);
+                        SoloNumero("chtrefValor");
+                        $("#chtrefValor").val(obj.VALOR);
+                        $("#chtrCuenta").html("");
+                        $("#chtrBanco").html("");
+                        $("#chtrefSaldoFavor").val(parseFloat(obj.SALDOFAVOR).toFixed(2));
+
+                        for (var i = 0; i <elemet0.length; i++) {elemet0[i].style.display="block";};
+                        for (var k = 0; k <elemet2.length; k++) {elemet2[k].style.display="block";};
+                        for (var l = 0; l <elemet3.length; l++) {elemet3[l].style.display="block";};
+                        
+                        BDConsultaOBJ("SELECT * FROM APP_CLIENTE_BANCO WHERE EMPRESA='"+masterEmpresa.trim()+"' AND CARDCODE = '"+ CARDCODE +"' GROUP BY BANKNAME ORDER BY BANKNAME ASC", function (obj1) {
+                            for (var ii = 0; ii < obj1.rows.length; ii++) {
+                                var row1 = obj1.rows.item(ii);
+                                $("#chtrBanco").append("<option value='"+row1.BANKCODE+"' "+((obj.BANCO == row1.BANKCODE)? " selected ":" ")+">"+row1.BANKNAME+"</option>");
+                            }  
+                        });
+
+                        BDConsultaOBJ("SELECT * FROM APP_CLIENTE_BANCO WHERE EMPRESA='"+masterEmpresa.trim()+"' AND CARDCODE = '"+ CARDCODE +"' AND BANKCODE = '"+obj.BANCO+"' ORDER BY ACCOUNT ASC", function (obj2) {
+                            for (var iii = 0; iii < obj2.rows.length; iii++) {
+                                var row2 = obj2.rows.item(iii);
+                                $("#chtrCuenta").append("<option value='"+row2.ACCOUNT+"' "+((obj.CUENTA == row2.ACCOUNT)? " selected ":" ")+">"+row2.ACCOUNT+"</option>");
+                            }  
+                        });
+                        $("#bodyListCuota").show();
+                        break;
+                    case "2":
+                        $("#tranFecha").val(obj.FECHAMEDPAGO);
+                        SoloNumeroCantidad("tranRef");
+                        $("#tranRef").val(obj.NUMEROREF);
+                        SoloNumero("chtrefValor");
+                        $("#chtrefValor").val(obj.VALOR);
+                        $("#chtrCuenta").html("");
+                        $("#chtrBanco").html("");
+                        $("#chtrefSaldoFavor").val(parseFloat(obj.SALDOFAVOR).toFixed(2));
+
+                        for (var j = 0; j <elemet1.length; j++) {elemet1[j].style.display="block";};
+                        for (var k = 0; k <elemet2.length; k++) {elemet2[k].style.display="block";};
+                        for (var l = 0; l <elemet3.length; l++) {elemet3[l].style.display="block";};
+                        
+                        BDConsultaOBJ("SELECT * FROM APP_BANCO WHERE EMPRESA='"+masterEmpresa.trim()+"' AND ACCOUNT != 'NO' GROUP BY BANKNAME ORDER BY BANKNAME ASC", function (obj1) {
+                            for (var ii = 0; ii < obj1.rows.length; ii++) {
+                                var row1 = obj1.rows.item(ii);
+                                $("#chtrBanco").append("<option value='"+row1.BANKCODE+"' "+((obj.BANCO==row1.BANKCODE)? " selected ":" ")+">"+row1.BANKNAME+"</option>");
+                            }   
+                        });
+
+                        BDConsultaOBJ("SELECT * FROM APP_BANCO WHERE EMPRESA='"+masterEmpresa.trim()+"' AND ACCOUNT != 'NO' AND BANKCODE = '"+ obj.BANCO +"' ORDER BY ACCOUNT ASC", function (obj2) {
+                            for (var iii = 0; iii < obj2.rows.length; iii++) {
+                                var row2 = obj2.rows.item(iii);
+                                $("#chtrCuenta").append("<option value='"+row2.ACCOUNT+"' "+((obj.CUENTA == row2.ACCOUNT)? " selected ":" ")+">"+row2.ACCOUNT+"</option>");
+                            } 
+                        });
+                        $("#bodyListCuota").show();
+                        break;
+                    case "3":
+                        SoloNumero("chtrefValor");
+                        $("#chtrefValor").val(obj.VALOR);
+                        for (var l = 0; l <elemet3.length; l++) {elemet3[l].style.display="block";};
+                        $("#chtrBanco").html("");
+                        $("#chtrCuenta").html("");
+
+                        $("#chFecha").val(obj.FECHAMEDPAGO);
+                        $("#chNumCheque").val(obj.NUMEROREF);
+
+                        $("#chtrefSaldoFavor").val(parseFloat(obj.SALDOFAVOR).toFixed(2));
+                        $("#bodyListCuota").show();
+                        break;
+                    case "4":
+                        var arrEstEmi = obj.EMISIONESTAB.split("-");
+                        SoloNumeroCantidad("retPtoEmi");
+                        $("#retPtoEmi").val(arrEstEmi[0]);
+                        SoloNumeroCantidad("retPtoEst");
+                        $("#retPtoEst").val(arrEstEmi[1]);
+                        SoloNumeroCantidad("retNumRet");
+                        $("#retNumRet").val(obj.RETENCION);
+                        SoloNumeroCantidad("retNumAuto");
+                        $("#retNumAuto").val(obj.NUMEROREF);
+                        
+                        $("#retFechEmi").val(obj.FECHAMEDPAGO);
+                        $("#retFechVcto").val(obj.FECHAVCTO);
+                        SoloNumero("retValTotal");
+                        $("#retValTotal").val(obj.VALOR);
+                        $("#chtrBanco").html("");
+                        $("#chtrCuenta").html("");
+                        
+                        for (var m = 0; m <elemet4.length; m++) {elemet4[m].style.display="block";};
+                        $("#bodyListCuotaRet").show();
+                        break;
+                }
+                CargarLineasMedioPago(recibo);
+            },100);
+        });
+    }
+
+    function CargarLineasMedioPago(recibo)
+    {
+        $("#AppCuotaLista").html("");
+        $("#AppCuotaListaRet").html("");
+        var strMedioPagoList="";
+        BDConsultaOBJ("SELECT * FROM APP_COBRANZA_DETALLE WHERE CARDCODE = '"+CARDCODE+"' AND RECIBO = '"+recibo+"' AND EMPRESA='"+masterEmpresa+"'  AND SYNCESTADO = 0 ORDER BY LINEA ASC", function (obj) {
+
+            if($("#tagMedioPago").val() != 4){
+                if( obj.rows.length >0)
+                {
+                    strMedioPagoList = "<tr style='background-color:#FFF'><td><strong class='text-blue'>NumDoc</strong></td><td align='center'><strong class='text-blue'># Cuota</strong></td><td align='center'><strong class='text-blue'>Valor Recaudado</strong></td></tr>";
+
+                    for (var j = 0; j < obj.rows.length; j++) 
+                    { 
+                        var row = obj.rows.item(j);
+
+                        var arrCuota = row.CUOTA.split("/");
+                        var newCuota = arrCuota[1] + "/" + arrCuota[0];
+                        strMedioPagoList = strMedioPagoList + "<tr style='background-color:#FFF'>";
+                        strMedioPagoList = strMedioPagoList + "<td><strong class='' id='tdCobSubDocNum'>"+ row.DOCNUM+"-"+row.TIPODOC +"</strong></td>";
+                        strMedioPagoList = strMedioPagoList + "<td align='center'><strong class='' id='tdCobSubCuota'>"+ newCuota +"</strong></td>";
+                        strMedioPagoList = strMedioPagoList + "<td align='center'><strong class='' id='tdCobSubReca'>"+ row.TOTALAPLICADO +"</strong></td>";
+                        strMedioPagoList = strMedioPagoList + " </tr>";
+                    }
+
+                    $("#AppCuotaLista").append(strMedioPagoList);
+                }
+            }else{
+
+                if( obj.rows.length >0)
+                {
+                    strMedioPagoList = "<tr style='background-color:#FFF'><td><strong class='text-blue'>NumDoc</strong></td><td align='center'><strong class='text-blue'>Porcentaje</strong></td><td align='center'><strong class='text-blue'>Total</strong></td></tr>";
+                    for (var j = 0; j < obj.rows.length; j++) 
+                    { 
+                        var row = obj.rows.item(j);
+                        var arrImpuesto = row.PORCENTAJE.split("-")
+                        strMedioPagoList = strMedioPagoList + "<tr style='background-color:#FFF'>";
+                        strMedioPagoList = strMedioPagoList + "<td><strong class='' id='tdCobSubDocNum'>"+ row.BASEREF +"</strong></td>";
+                        strMedioPagoList = strMedioPagoList + "<td><strong class='' id='tdCobSubCuota'>"+ arrImpuesto[2] +"</strong></td>";
+                        strMedioPagoList = strMedioPagoList + "<td align='center'><strong class='' id='tdCobSubReca'>"+ row.TOTALAPLICADO +"</strong></td>";
+                        strMedioPagoList = strMedioPagoList + " </tr>";
+
+
+                        BDConsultaOBJ("SELECT * FROM APP_CLIENTE_FACTURA WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ row.CARDCODE +"' AND DOCNUM = '"+row.DOCNUM+"'; ", function (obj1) {
+                            for (var i = 0; i < obj1.rows.length; i++) {
+                                var row1 = obj1.rows.item(i);
+                                $("#RetValNet").html(row1.SUBTOTAL);
+                                $("#RetValIva").html(row1.IVA);
+                            }
+                        });
+                    }
+                    $("#AppCuotaListaRet").append(strMedioPagoList);
+                    $("#btnMasRet").hide();
+                }
+            }
+        });
+    }
+
+    //Funciones Borrar Sugerido
+        function fn_BorrarSugerido() 
+        {
+            for (var i = 0; i <= LINEACUOTA; i++) {
+                if ($("#tdRecaInput" + i).val() != undefined) {                
+                    if (parseFloat($("#tdRecaInput" + i).val()) > 0) {
+                        $("#tdRecaInput" + i).val("0.00");
+                        fn_encera(i);
+                        fn_calcPendiente(i);
+                    }
+                }
+            }
+        }
+
+    //Funciones Motivo
+        function fn_motivo()
+        {
+            var saldoFavorRet = true;
+            fn_verificaMotivo(function(RETORNO){
+                saldoFavorRet = RETORNO;
+                var valorCaja = parseFloat(($("#chtrefValor").val()=="") ? "0" : $("#chtrefValor").val());
+                var lineaMotivo ="";
+                var lineaMotivoNoVenc ="";
+                var DocMotAdd ="";
+                for (var i = 0; i <= LINEACUOTA; i++) 
+                {
+                    if($("#tdRecaInput"+i).val() != undefined){
+
+                        var valorPendiente = parseFloat($("#tdPend"+i).html());
+                        var valorRecaudado = parseFloat($("#tdRecaInput"+i).val()).toFixed(2);
+
+                        if(valorCaja > 0)
+                        {
+                            valorCaja = valorCaja - parseFloat(valorRecaudado);
+                            valorCaja = parseFloat(valorCaja.toFixed(2));
+                        }
+
+                        if(valorCaja > 0 && valorPendiente > 0)
+                        {   
+                            var arrFecha = $("#tdFecVen"+i).html().split('-');
+                            var dHoy= new Date();
+                            var dVenc= new Date(parseInt(arrFecha[0]),parseInt(arrFecha[1])-1,parseInt(arrFecha[2]));
+
+                            if(lineaMotivoNoVenc.indexOf( $("#tdDocNum"+i).html() ) == -1 && lineaMotivo.indexOf( $("#tdDocNum"+i).html() ) == -1)
+                            {
+                                  console.log(DocMotAdd);
+                                if (dVenc.getTime() > dHoy.getTime()) 
+                                {
+                                    if(DocMotAdd.indexOf( $("#tdDocNum"+i).html() ) == -1)
+                                    {
+                                        if( $("#tdMotivo"+i).html() == "" || $("#tdSR"+i).html() == "" )
+                                        {
+                                            lineaMotivoNoVenc = lineaMotivoNoVenc + i +":"+ $("#tdDocNum"+i).html() +":"+ $("#tdCuota"+i).html() + ",";
+                                        }
+                                        else
+                                        {
+                                            DocMotAdd = DocMotAdd + $("#tdDocNum"+i).html()+ ",";
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if(DocMotAdd.indexOf( $("#tdDocNum"+i).html() ) == -1)
+                                    {
+                                        if( $("#tdMotivo"+i).html() == "" || $("#tdSR"+i).html() == "" )
+                                        {
+                                            lineaMotivo = lineaMotivo + i +":"+ $("#tdDocNum"+i).html() +":"+ $("#tdCuota"+i).html() + ",";
+                                        }
+                                        else
+                                        {
+                                            DocMotAdd = DocMotAdd + $("#tdDocNum"+i).html()+ ",";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if(saldoFavorRet)
+                {
+                    lineaMotivo = lineaMotivo + lineaMotivoNoVenc;
+                }
+
+                if(lineaMotivo != "")
+                {   
+                    LINEACUOTAMOT = 0;
+                    var strTableCuota="<tr style='background-color:#FFF'><td style='display: none;'></td><td><strong class='text-blue'>NumDoc</strong></td><td style='display:none'><strong class='text-blue'>#Cuota</strong></td><td><strong class='text-blue'>Motivo</strong></td><td><strong class='text-blue'>S. Reclamo</strong></tr>";
+
+                    var selectMotivo = "<select name='SelectMotivo' id='tagMotivoCuota~' style='width: 100%;height: 44px;'  onchange='fn_cambioMotivo(~)'>";
+                    BDConsultaOBJ("SELECT * FROM APP_MOTIVO_CUOTA ORDER BY ID ASC", function (obj) {
+                        for (var j = 0; j < obj.rows.length; j++) 
+                        { 
+                            var row = obj.rows.item(j);
+                            selectMotivo = selectMotivo + "<option value='"+row.ID+"' >"+row.DESCRIPCION+"</option>";
+                        }
+                        selectMotivo = selectMotivo + "</select>";
+
+                        var ArrFactMot = lineaMotivo.split(",");ArrFactMot = ArrFactMot.filter(Boolean);
+                        for (var i = 0; i < ArrFactMot.length; i++)
+                        {
+                            var arrLinFac = ArrFactMot[i].split(":");
+                            strTableCuota=strTableCuota+"<tr style='background-color:#FFF'>";
+                            strTableCuota=strTableCuota+"<td style='display: none;' id='tdIdMot"+i+"'>"+arrLinFac[0]+"</td>";
+                            strTableCuota=strTableCuota+"<td id='tdDocNumMot"+i+"' style='padding-top: 5px;'>"+ arrLinFac[1] +"</td>";
+                            strTableCuota=strTableCuota+"<td id='tdCuotaMot"+i+"' style='display:none'>"+ arrLinFac[2] +"</td>";
+                            strTableCuota=strTableCuota+"<td id='tdNoGestMot"+i+"'>"+ selectMotivo.replace("~",i).replace("~",i); +"</td>";
+                            strTableCuota=strTableCuota+"<td id='tdSolRecMot"+i+"'><input type='text' name='inputMotivo' maxlength='6' id='tdSolRecMotInput"+i+"' style='padding-right: 7px;height: 55px;'></td>";
+                            strTableCuota=strTableCuota+"</tr>";
+                            LINEACUOTAMOT = LINEACUOTAMOT + 1 ;
+                        }
+                        $("#AppMotivoFactLista").html(strTableCuota);
+
+                        setTimeout(function(){
+                            fn_SoloNumerosMot(ArrFactMot.length);
+                            
+                            var arraySelect = document.getElementsByName("SelectMotivo");
+                            var arrayInput = document.getElementsByName("inputMotivo");
+                            for (var i = 0; i < arraySelect.length; i++) {
+                                $("#"+arraySelect[i].id).selectmenu();
+                                $("#"+arrayInput[i].id).textinput();
+                            }                        
+                        },100);
+
+                        fn_OpenCajaMot();
+                    });
+                }else
+                {
+                    fn_GuardaMedioPago("");
+                }
+            });
+        }
+
+        function fn_verificaMotivo(RETORNO)
+        {   
+            var valorCaja = parseFloat(($("#chtrefValor").val()=="") ? "0" : $("#chtrefValor").val());
+            var lineaMotivo ="";
+            for (var i = 0; i <= LINEACUOTA; i++) {
+                if($("#tdRecaInput"+i).val() != undefined){
+
+                    var valorPendiente = parseFloat($("#tdPend"+i).html());
+                    var valorRecaudado = parseFloat($("#tdRecaInput"+i).val()).toFixed(2);
+
+                    if(valorCaja > 0)
+                    {
+                        valorCaja = valorCaja - parseFloat(valorRecaudado);
+                        valorCaja = parseFloat(valorCaja.toFixed(2));
+                    }
+                }
+            }
+
+            if(valorCaja > 0)
+            {
+              RETORNO(true);
+            }
+            else
+            {
+              RETORNO(false);
+            }
+        }
+
+        function fn_SoloNumerosMot(CANTMOTIVO)
+        {
+            for (var i = 0; i <= CANTMOTIVO; i++) {
+                if($("#tdSolRecMotInput"+i).val() != undefined){
+                     SoloNumero("tdSolRecMotInput"+i);
+                }
+            }
+        }
+
+        function fn_OpenCajaMot()
+        {
+            
+            fn_CambiarPage('containerCobPro','containerCobMot');
+        }
+
+        function fn_CloseCajaMot()
+        {
+
+            fn_CambiarPage('containerCobMot', 'containerCobPro');
+        }
+
+        function fn_GuardaCuotaMot()
+        {
+            for (var i = 0; i <= LINEACUOTAMOT; i++) {
+                if($("#tdIdMot"+i).val() != undefined){
+                    $("#loader_sys_btn_show").click();
+                    var VARNUMSR = $("#tdSolRecMotInput"+i).val()
+
+                    if( VARNUMSR.indexOf('.') >= 0)
+                    {
+                        alert("El numero de solicitud de reclamo no puede tener simbolos!");
+                        fn_focus("tdSolRecMotInput"+i);
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    if( $("#tdSolRecMotInput"+i).val().length < 6)
+                    {
+                        alert("El numero de solicitud de reclamo debe de tener 6 caracteres numericos!");
+                        fn_focus("tdSolRecMotInput"+i);
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    var mot = $("#tagMotivoCuota"+i).val();
+                    var sr = $("#tdSolRecMotInput"+i).val();
+                    var idmot = $("#tdIdMot"+i).html();
+                    var idsr = $("#tdIdMot"+i).html();
+                    $("#tdMotivo"+idmot).html(mot);
+                    $("#tdSR"+idsr).html(sr);
+                }
+            }
+
+            $("#loader_sys_btn_hide").click();
+            fn_CloseCajaMot();
+        }
+
+    //Funciones Seleccion Factura
+        function fn_SeleccionarDocumento()
+        {
+            var strDocSelect = '<select id="IdFacturaSel" style="width:100%;height:55px;" onchange="fn_SeleccionarDocChange();">';
+            for (var i = 0; i <= LINEACUOTA; i++) 
+            {
+                if($("#tdRecaInput"+i).val() != undefined)
+                {
+                    if(strDocSelect.indexOf( $("#tdDocNum"+i).html() ) == -1)
+                    {
+                        strDocSelect=strDocSelect+"<option value='"+ $("#tdDocNum"+i).html() +"'>"+ $("#tdDocNum"+i).html() +"</option>";
+                    }
+                }
+            }
+            strDocSelect = strDocSelect + '</select>';
+            $("#SelFactFT").html(strDocSelect);
+
+            setTimeout(function(){
+                $("#SelFactFT").selectmenu();
+                SoloNumero("SelFactVA");
+                fn_OpenCajaSelFact();
+                fn_SeleccionarDocChange();
+            },50);  
+        }
+        
+        function fn_OpenCajaSelFact()
+        {
+
+            fn_CambiarPage('containerCobPro','containerCobFac');
+        }
+
+        function fn_CloseCajaSelFact()
+        {
+            fn_CambiarPage('containerCobFac','containerCobPro');
+            $("#SelFactFT").html("");
+            $("#SelFactAgregadas").html("");
+        }
+
+        function fn_SeleccionarDocChange()
+        {
+            var DOCNUM =  $("#IdFacturaSel").val();
+            var TotalFactura = 0.00;
+            
+            for (var i = 0; i <= LINEACUOTA; i++) 
+            {
+                if($("#tdRecaInput"+i).val() != undefined)
+                {
+                    if( $("#tdDocNum"+i).html() == DOCNUM)
+                    {
+                        TotalFactura = TotalFactura + parseFloat($("#tdSalCu"+i).html())
+                    }
+                }
+            }
+
+            $("#SelFactMT").val(TotalFactura.toFixed(2));
+            $("#SelFactVA").val("0.00");
+            $("#SelFactSP").val(TotalFactura.toFixed(2));
+            fn_SeleccionarDocVerificarSaldos();
+        }
+
+        function fn_SeleccionarDocVerificarSaldos()
+        {
+            var DOCNUM =  $("#IdFacturaSel").val();
+            var TotalMP = parseFloat($("#chtrefValor").val());
+            var TotalRe = 0.00;
+            var TotalReT = 0.00;
+            var SP = 0.00;
+
+            $("#FactValMedPago").html(TotalMP.toFixed(2));
+
+            var DOCNUMOTRO = "";
+            var TOTALRECOTRO = 0.00;
+
+            var elemet0 = document.getElementsByName("SelFactOtroValor");
+            for (var j = 0; j <elemet0.length; j++) 
+            {
+                DOCNUMOTRO = DOCNUMOTRO + elemet0[j].id.replace("SelFactVA","") +",";
+                TOTALRECOTRO = TOTALRECOTRO + parseFloat(elemet0[j].textContent);
+            };
+
+            TotalReT = TOTALRECOTRO + parseFloat( (($("#SelFactVA").val() == "")? "0": $("#SelFactVA").val() ) ) ;
+
+            if(TotalReT > TotalMP)
+            {
+                alert("El valor recaudado no puede ser mayor que el valor del Medio de Pago!")
+
+                var ValorMTFact = parseFloat($("#SelFactMT").val());
+                var ValorPendRec = TotalMP - TOTALRECOTRO;
+
+                if(ValorMTFact >= ValorPendRec)
+                {
+                    $("#SelFactVA").val(ValorPendRec.toFixed(2))
+                    SP = TotalMP - (TOTALRECOTRO + ValorPendRec);
+                    $("#FactValRec").html((TOTALRECOTRO + ValorPendRec).toFixed(2));
+                    $("#FactValPend").html(SP.toFixed(2));
+                    $("#SelFactSP").val(( ValorMTFact - ValorPendRec ).toFixed(2));
+                }
+                else
+                {
+                    $("#SelFactVA").val(ValorMTFact.toFixed(2))
+                    SP = TotalMP - (TOTALRECOTRO + ValorMTFact);
+                    $("#FactValRec").html((TOTALRECOTRO + ValorMTFact).toFixed(2));
+                    $("#FactValPend").html(SP.toFixed(2));
+                    $("#SelFactSP").val(( 0.00 ).toFixed(2));
+                }
+                fn_focus("SelFactVA");
+            }
+            else
+            {
+                SP = TotalMP - TotalReT;
+                $("#FactValRec").html(TotalReT.toFixed(2));
+                $("#FactValPend").html(SP.toFixed(2));
+            }
+        }
+
+        function fn_SeleccionarDocValorChange()
+        {
+            var TotalFactura = parseFloat($("#SelFactMT").val());
+            var TotalRecaudado = parseFloat( (($("#SelFactVA").val() == "")? "0": $("#SelFactVA").val() ) );
+            var SP = 0.00;
+
+            if(TotalRecaudado > TotalFactura)
+            {
+                alert("El valor recaudado no puede ser mayor que el monto total del documento!")
+                $("#SelFactVA").val("0.00")
+                fn_focus("SelFactVA");
+                $("#SelFactSP").val(TotalFactura.toFixed(2));
+            }
+            else
+            {
+                SP = TotalFactura - TotalRecaudado;
+                $("#SelFactSP").val(SP.toFixed(2));
+            }
+            fn_SeleccionarDocVerificarSaldos();
+        }    
+
+        function fn_SeleccionarDocAgregar()
+        {
+            var DOCNUM =  $("#IdFacturaSel").val();
+            var DOCMT =  $("#SelFactMT").val();
+            var DOCVA =  $("#SelFactVA").val();
+            var DOCSP =  $("#SelFactSP").val();
+
+            if(DOCNUM != null){
+                if(DOCVA <= 0)
+                { 
+                    alert("El valor recaudado del documento debe ser mayor a 0!")
+                    return;
+                }
+                else
+                {
+                    var strAgregarDoc ="";               
+
+                    strAgregarDoc = strAgregarDoc + "<div class='ui-grid-d' id = 'Div"+DOCNUM+"'>";
+                    strAgregarDoc = strAgregarDoc + "<div class='ui-block-a' style='text-align: center;padding-top: 22px;'><span class='' id='SelFactDOC"+DOCNUM+"'>"+DOCNUM+"</span></div>";
+                    strAgregarDoc = strAgregarDoc + "<div class='ui-block-b' style='text-align: center;padding-top: 22px;'><span class='' id='SelFactMT"+DOCNUM+"'>"+DOCMT+"</span></div>";
+                    strAgregarDoc = strAgregarDoc + "<div class='ui-block-c' style='text-align: center;padding-top: 22px;'><span class='' id='SelFactVA"+DOCNUM+"' name='SelFactOtroValor'>"+DOCVA+"</span></div>";
+                    strAgregarDoc = strAgregarDoc + "<div class='ui-block-d' style='text-align: center;padding-top: 22px;'><span class='' id='SelFactSP"+DOCNUM+"'>"+DOCSP+"</span></div>";
+                    strAgregarDoc = strAgregarDoc + "<div class='ui-block-e' style='text-align: center;'><button class='cus-btn cus-btn-new cus-btn-dan' id='SelFactAgregar' onclick='fn_SeleccionarDocEliminar(\""+DOCNUM+"\")' style='width: 60%;'>X</button></div>";
+                    strAgregarDoc = strAgregarDoc + "</div>";
+
+                    $("#SelFactAgregadas").append(strAgregarDoc);
+                    $("#IdFacturaSel option[value='"+ DOCNUM +"']").remove();
+                    $('#IdFacturaSel').val($('#IdFacturaSel option:first-child').val()).trigger('change');
+                }
+            }
+            else
+            {
+              alert("No existen documentos para agregar!")
+              return;
+            }
+        }
+
+        function fn_SeleccionarDocEliminar(DOCNUM)
+        {
+            $("#Div"+ DOCNUM ).remove();
+            $("#IdFacturaSel").append("<option value='"+ DOCNUM +"'>"+ DOCNUM +"</option>");
+            $('#IdFacturaSel').val($('#IdFacturaSel option:first-child').val()).trigger('change');
+        }
+
+        function fn_SeleccionarDocAplicar()
+        {
+
+            var DOCNUM = "";
+            var TOTALREC = 0.00;
+
+            var SaldoFacturaCuota = 0.00;
+            var ValorRecaudadoCuota = 0.00;
+            var SaldoPendienteCuota = 0.00;
+
+            var elemet0 = document.getElementsByName("SelFactOtroValor");
+            
+            if(elemet0.length > 0)
+            {
+                fn_BorrarSugerido();
+            }
+
+            for (var j = 0; j <elemet0.length; j++) 
+            {
+                DOCNUM = elemet0[j].id.replace("SelFactVA","") ;
+                TOTALREC = parseFloat(elemet0[j].textContent);
+                
+                for (var i = 0; i <= LINEACUOTA; i++) 
+                {
+                    if($("#tdRecaInput"+i).val() != undefined)
+                    { 
+                        console.log(DOCNUM);
+                        if( $("#tdDocNum"+i).html() == DOCNUM)
+                        {
+                            if(TOTALREC > 0){
+                                SaldoFacturaCuota = parseFloat($("#tdSalCu"+i).html());
+                                if( SaldoFacturaCuota >= TOTALREC)
+                                {
+                                    ValorRecaudadoCuota = TOTALREC;
+                                    SaldoPendienteCuota = SaldoFacturaCuota - ValorRecaudadoCuota;
+                                    TOTALREC = TOTALREC - ValorRecaudadoCuota;                                
+                                }
+                                else
+                                {
+                                    ValorRecaudadoCuota = SaldoFacturaCuota
+                                    SaldoPendienteCuota = SaldoFacturaCuota - ValorRecaudadoCuota;
+                                    TOTALREC = TOTALREC - ValorRecaudadoCuota;
+                                }
+
+                                $("#tdRecaInput"+i).val(ValorRecaudadoCuota.toFixed(2))
+                                $("#tdPend"+i).html(SaldoPendienteCuota.toFixed(2))
+                                fn_encera(i);
+                            }
+                        }
+                    }
+                }
+            }
+
+            fn_obtenTotalRec(function(RETORN){
+                var valorCaja = parseFloat(($("#chtrefValor").val()=="") ? "0" : $("#chtrefValor").val());
+                var saldoFavor= valorCaja - RETORN;
+                $("#chtrefSaldoFavor").val((saldoFavor > 0) ? saldoFavor.toFixed(2) : "0.00");
+            });
+
+            $("#totReca").html("0");
+            $("#totPend").html("0");
+
+            for (var i = 0; i <= LINEACUOTA; i++) 
+            {
+                if($("#tdRecaInput"+i).val() != undefined){
+                    $("#totReca").html( (parseFloat($("#totReca").html()) + parseFloat(($("#tdRecaInput"+i).val()=="") ? "0" : $("#tdRecaInput"+i).val())).toFixed(2) );
+                    $("#totPend").html( (parseFloat($("#totPend").html()) + parseFloat(($("#tdPend"+i).html()=="") ? "0" : $("#tdPend"+i).html())).toFixed(2) );
+                }
+            }
+
+            fn_CloseCajaSelFact();            
+        }
+
+    //Funciones Retencion
+        function fn_cargaFacturaRet()
+        {
+            LINEAFACTRET=0;
+            $("#AppCuotaListaRet").html("");
+            var strTableRetencion ="<tr style='background-color:#FFF'><td align='center'><strong class='text-blue'>Factura Aplicada</strong></td><td align='center'><strong class='text-blue'>Porcentaje</strong></td><td align='center'><strong class='text-blue'>Total</strong></td><td></td></tr>";
+            BDConsultaOBJ("SELECT * FROM APP_CLIENTE_FACTURA WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ CARDCODE +"' AND ESTADO = 'A' ORDER BY DOCNUM ASC", function (obj) {
+                var strFacturasCombo ="<select id='factapli' style='width:100%;height: 70px;' onchange='fn_calculaImpuesto("+LINEAFACTRET+")'>";
+                for (var i = 0; i < obj.rows.length; i++) {
+                    var row = obj.rows.item(i);
+                    strFacturasCombo = strFacturasCombo + "<option value='"+row.DOCNUM+"'>"+row.DOCNUM+"</option>";
+                }
+                strFacturasCombo = strFacturasCombo +"</select >";
+                BDConsultaOBJ("SELECT * FROM APP_CLIENTE_IMPUESTO WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ CARDCODE +"' ORDER BY WTNAME ASC", function (obj1) {
+                    var strImpuestoCombo ="<select id='retapli"+LINEAFACTRET+"' name = 'retapliname' style='width:100%;height: 70px;' onchange='fn_calculaImpuesto("+LINEAFACTRET+")'>";
+                    for (var i = 0; i < obj1.rows.length; i++) {
+                        var row1 = obj1.rows.item(i);
+                        strImpuestoCombo = strImpuestoCombo + "<option value='"+row1.BASETYPE+"-"+row1.WTCODE+"'>"+row1.WTNAME+"</option>";
+                    }
+                    strImpuestoCombo = strImpuestoCombo + "</select >";
+                    strTableRetencion = strTableRetencion + "<tr style='background-color:#FFF' id='trRetLin"+LINEAFACTRET+"'>";
+                    strTableRetencion = strTableRetencion + "<td>"+ strFacturasCombo +"</td>";
+                    strTableRetencion = strTableRetencion + "<td>"+ strImpuestoCombo +"</td>";
+                    strTableRetencion = strTableRetencion + "<td><input type='text' name='valorRetname' style='width: 80px;text-align: right;height: 70px;' onclick=\"fn_focus('valorRet"+LINEAFACTRET+"')\" onblur='fn_VerificaImpuestoLimite("+LINEAFACTRET+");'  id='valorRet"+LINEAFACTRET+"' /></td>";
+                    strTableRetencion = strTableRetencion + "<td></td></tr>";
+                    $("#AppCuotaListaRet").html(strTableRetencion);
+
+                    setTimeout(function(){
+                        fn_calculaImpuesto(LINEAFACTRET); 
+                        $("#factapli").selectmenu();
+                        var arraySelect = document.getElementsByName("retapliname");
+                        var arrayInput = document.getElementsByName("valorRetname");
+                        for (var i = 0; i < arraySelect.length; i++) {
+                            $("#"+arraySelect[i].id).selectmenu();
+                            $("#"+arrayInput[i].id).textinput();
+                        }     
+                    },100);
+                });
+            });
+        }
+
+        function fn_calculaImpuesto(linea)
+        {
+            SoloNumeroCantidad("valorRet"+linea);
+            var arrImpuesto = $("#retapli"+linea).val().split("-");
+
+            BDConsultaOBJ("SELECT * FROM APP_CLIENTE_IMPUESTO WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ CARDCODE +"' AND WTCODE = '"+ arrImpuesto[1] +"' AND BASETYPE = '"+ arrImpuesto[0] +"';", function (obj) {
+                var imp = 0;
+                for (var i = 0; i < obj.rows.length; i++) {
+                    var row = obj.rows.item(i);
+                    imp = parseFloat(row.RATE)/100;
+                }
+
+                BDConsultaOBJ("SELECT * FROM APP_CLIENTE_FACTURA WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ CARDCODE +"' AND DOCNUM = '"+$("#factapli").val()+"'; ", function (obj1) {
+                    var baseImponible = 0;
+                    var result = 0;
+                    for (var i = 0; i < obj1.rows.length; i++) {
+                        var row1 = obj1.rows.item(i);
+                        if (arrImpuesto[0]=="V")
+                        {
+                            baseImponible= parseFloat(row1.IVA);
+                        }
+                        else
+                        {
+                            baseImponible= parseFloat(row1.SUBTOTAL);
+                        }
+
+                        $("#RetValNet").html(row1.SUBTOTAL);
+                        $("#RetValIva").html(row1.IVA);
+
+                        result = baseImponible * imp;
+                        $("#valorRet"+linea).val(result.toFixed(2));
+                    }
+                    setTimeout(function(){
+                        fn_calculaVTRet();  
+                    },50);
+                    $("#btnMasRet").show();
+                });
+            });
+        }
+
+        function fn_VerificaImpuestoLimite(linea)
+        {
+            /*
+            SoloNumeroCantidad("valorRet"+linea);
+            var arrImpuesto = $("#retapli"+linea).val().split("-");
+
+            BDConsultaOBJ("SELECT * FROM APP_CLIENTE_IMPUESTO WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ CARDCODE +"' AND WTCODE = '"+ arrImpuesto[1] +"' AND BASETYPE = '"+ arrImpuesto[0] +"';", function (obj) {
+                var imp = 0;
+                for (var i = 0; i < obj.rows.length; i++) {
+                    var row = obj.rows.item(i);
+                    imp = parseFloat(row.RATE)/100;
+                }
+
+                BDConsultaOBJ("SELECT * FROM APP_CLIENTE_FACTURA WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ CARDCODE +"' AND DOCNUM = '"+$("#factapli").val()+"'; ", function (obj1) {
+                    var baseImponible = 0;
+                    var result = 0;
+                    for (var i = 0; i < obj1.rows.length; i++) {
+                        var row1 = obj1.rows.item(i);
+                        if (arrImpuesto[0]=="V")
+                        {
+                            baseImponible= parseFloat(row1.IVA);
+                        }
+                        else
+                        {
+                            baseImponible= parseFloat(row1.SUBTOTAL);
+                        }
+
+                        $("#RetValNet").html(row1.SUBTOTAL);
+                        $("#RetValIva").html(row1.IVA);
+
+                        result = baseImponible * imp;
+                        result = parseFloat(result.toFixed(2));
+
+                        var valorRetMod = parseFloat($("#valorRet"+linea).val());
+
+                        if( valorRetMod >= (result-1)  &&  valorRetMod <= (result+1) )
+                        {
+                           $("#valorRet"+linea).val(valorRetMod.toFixed(2));
+                        }
+                        else
+                        {
+                            alert("El valor retenido se puede modificar en un rango de +- 1 dolar del valor calculado!");
+                            $("#valorRet"+linea).val(result.toFixed(2));
+                        }
+                    }
+                    setTimeout(function(){
+                        fn_calculaVTRet();  
+                    },50);
+                    $("#btnMasRet").show();
+                });
+            });
+            */
+            setTimeout(function(){
+                fn_calculaVTRet();  
+            },50);
+            $("#btnMasRet").show();
+        }
+
+        function fn_nuevaFactRet()
+        {
+            var strImp="";
+            var LineasHabilitadas = "";
+            for(var i = 0; i <= LINEAFACTRET; i++)
+            {
+                if($("#retapli"+i).val() != undefined){
+                    LineasHabilitadas = LineasHabilitadas+ i + ",";
+                    var arrImpuesto = $("#retapli"+i).val().split("-");
+                    if(strImp == ""){
+                        strImp = strImp + "'" + arrImpuesto[1]+ "'";
+                    }else{
+                        strImp = strImp + ",'" + arrImpuesto[1]+ "'";
+                    }
+                }
+            }
+
+            BDConsultaOBJ("SELECT * FROM APP_CLIENTE_IMPUESTO WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ CARDCODE +"' AND WTCODE NOT IN ("+ strImp +");", function (obj) {
+
+                if(obj.rows.length > 0)
+                {
+                    var arrLineas = LineasHabilitadas.split(",");
+                    arrLineas = arrLineas.filter(Boolean)
+
+                    for (var k = 0; k < arrLineas.length; k++) {
+                        $("#factapli").prop("disabled",true)
+                        $("#retapli"+arrLineas[k]).prop("disabled",true)
+                        $("#valorRet"+arrLineas[k]).prop("disabled",true)
+                    };
+
+                    LINEAFACTRET=LINEAFACTRET+1;
+                    var strImpuestoCombo="<select id='retapli"+LINEAFACTRET+"' name='retapliname' style='width:100%;height: 70px;' onchange='fn_calculaImpuesto("+LINEAFACTRET+")' >";
+                    var strTableRetencion = "<tr style='background-color:#FFF' id='trRetLin"+LINEAFACTRET+"'>";
+                    strTableRetencion = strTableRetencion + "<td align='' style='padding-top: 18px;'>"+$("#factapli").val()+"</td>";
+                    for (var i = 0; i < obj.rows.length; i++) 
+                    {
+                        var row = obj.rows.item(i);
+                        strImpuestoCombo = strImpuestoCombo + "<option value='"+row.BASETYPE+"-"+row.WTCODE+"'>"+row.WTNAME+"</option>";
+                    }
+                    strImpuestoCombo = strImpuestoCombo + "</select >";
+                    strTableRetencion = strTableRetencion + "<td>"+ strImpuestoCombo +"</td>";
+                    strTableRetencion = strTableRetencion + "<td><input type='text' name='valorRetname' style='width: 80px;text-align: right;height: 70px;' onclick=\"fn_focus('valorRet"+LINEAFACTRET+"')\" onblur='fn_VerificaImpuestoLimite("+LINEAFACTRET+");' id='valorRet"+LINEAFACTRET+"' /></td>";
+                    strTableRetencion = strTableRetencion + "<td><button class='btn btn-box-tool' style='height: 70px;width: 35px;' onclick=\"fn_DeleteItemListRet("+LINEAFACTRET+")\"><i class='fa fa-remove' style='font-size: 20px;'></i></button></td></tr>";
+
+                    $("#AppCuotaListaRet").append(strTableRetencion);
+
+                    setTimeout(function(){
+                        var arraySelect = document.getElementsByName("retapliname");
+                        var arrayInput = document.getElementsByName("valorRetname");
+                        for (var i = 0; i < arraySelect.length; i++) {
+                            $("#"+arraySelect[i].id).selectmenu();
+                            $("#"+arrayInput[i].id).textinput();
+                        }
+                        fn_calculaImpuesto(LINEAFACTRET);
+                    },100);
+                }
+                else            
+                {
+                    alert("El cliente no contiene mas codigos de retencion asociados!");
+                }
+
+            });
+        }
+
+        function fn_DeleteItemListRet(linea)
+        {
+            $("#trRetLin"+linea).remove();
+
+            
+            var LineasHabilitadas = "";
+            for(var i = 0; i <= LINEAFACTRET; i++)
+            {
+                if($("#retapli"+i).val() != undefined){
+                    LineasHabilitadas = LineasHabilitadas+ i + ",";
+                }
+            }
+
+            var arrLineas = LineasHabilitadas.split(",");
+            arrLineas = arrLineas.filter(Boolean)
+
+            for (var k = 0; k < arrLineas.length; k++) {
+                $("#factapli").prop("disabled",true)
+                $("#retapli"+arrLineas[k]).prop("disabled",false)
+                $("#valorRet"+arrLineas[k]).prop("disabled",false)
+            };
+
+            for (var k = 0; k < arrLineas.length - 1; k++) {
+                $("#factapli").prop("disabled",true)
+                $("#retapli"+arrLineas[k]).prop("disabled",true)
+                $("#valorRet"+arrLineas[k]).prop("disabled",true)
+            };
+
+            var ultimoRegHab = "";
+            for (var k = 0; k < arrLineas.length; k++) {
+                ultimoRegHab = arrLineas[k];
+            };
+            
+            var strImp="";
+            for(var i = 0; i <= LINEAFACTRET; i++)
+            {
+                if($("#retapli"+i).val() != undefined){
+                    if(i != ultimoRegHab){
+                        var arrImpuesto = $("#retapli"+i).val().split("-");
+                        if(strImp == ""){
+                            strImp = strImp + "'" + arrImpuesto[1]+ "'";
+                        }else{
+                            strImp = strImp + ",'" + arrImpuesto[1]+ "'";
+                        }
+                    }
+                }
+            }
+
+            $("#retapli"+ultimoRegHab).html("");
+
+            BDConsultaOBJ("SELECT * FROM APP_CLIENTE_IMPUESTO WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ CARDCODE +"' AND WTCODE NOT IN ("+ strImp +");", function (obj) {
+                for (var i = 0; i < obj.rows.length; i++) 
+                {
+                    var row = obj.rows.item(i);
+                    $("#retapli"+ultimoRegHab).append("<option value='"+row.BASETYPE+"-"+row.WTCODE+"'>"+row.WTNAME+"</option>");
+                }
+
+                fn_calculaImpuesto(ultimoRegHab);
+            });
+
+            if(arrLineas.length == 1)
+            {
+                $("#factapli").prop("disabled",false)
+            }
+        }
+
+        function fn_calculaVTRet()
+        {
+            var sumValorTotal = 0;
+            for (var i = 0; i <= LINEAFACTRET; i++) 
+            {
+                if($("#valorRet"+i).val() != undefined)
+                {
+                    if(parseFloat($("#valorRet"+i).val()) > 0)
+                    {
+                        sumValorTotal = sumValorTotal + parseFloat($("#valorRet"+i).val());
+                    }
+                }
+            }
+
+            $("#retValTotal").val(sumValorTotal.toFixed(2))
+        }
+
+        function fn_TipoRetencion()
+        {
+            var Tipo=""
+            var elemet0 = document.getElementsByName("filtroRet");
+            for (var j = 0; j <elemet0.length; j++) 
+            {
+                if(elemet0[j].checked==true){
+                    Tipo = elemet0[j].value;
+                }
+            };
+
+            if(Tipo=="E")
+            {
+                $("#retPtoEmi").val("");
+                $("#retPtoEst").val("");
+                $("#retNumAuto").val("");
+                $("#retFechVcto").val("");
+                var FECHAEMI = $("#retFechEmi").val().split('-');
+                var NDATE = new Date(parseInt(FECHAEMI[0])+1,parseInt(FECHAEMI[1])-1,parseInt(FECHAEMI[2]));
+                $("#retFechVcto").prop("readonly",true)
+                fn_fechaformato(NDATE, 2, function (RETORNO) { $("#retFechVcto").val(RETORNO); });
+            }
+            else 
+            {
+                BDConsultaOBJ("SELECT EMISIONESTAB,NUMEROREF,FECHAVCTO FROM APP_COBRANZA WHERE CARDCODE = '" + CARDCODE + "' AND EMPRESA = '" + masterEmpresa + "' AND IDMEDPAGO = 4 ORDER BY RECIBO DESC LIMIT 1 ;", function (obj) {
+                    if(obj.rows.length>0){
+                        for (var i = 0; i < obj.rows.length; i++) {
+                            var row = obj.rows.item(i);
+                            
+                            $("#retPtoEmi").val(row.EMISIONESTAB.split('-')[0]);
+                            $("#retPtoEst").val(row.EMISIONESTAB.split('-')[1]);
+                            $("#retNumAuto").val(row.NUMEROREF);
+                            if (row.FECHAVCTO != undefined) {
+                                var FECHAEMI = row.FECHAVCTO.split('-');
+                                var NDATE = new Date(parseInt(FECHAEMI[0]), parseInt(FECHAEMI[1]) - 1, parseInt(FECHAEMI[2]));
+                                if (NDATE > new Date) {
+                                    $("#retFechVcto").val(row.FECHAVCTO);
+                                } else {
+                                    fn_fechaformato(new Date, 2, function (RETORNO) { $("#retFechVcto").val(RETORNO); });
+                                }
+                                $("#retFechVcto").prop("readonly", false)
+                            }
+                        }
+                    }
+                    else
+                    {
+                        $("#retFechVcto").prop("readonly", false)
+                        fn_fechaformato(new Date, 2, function (RETORNO) { $("#retFechVcto").val(RETORNO); });
+                    }
+                });
+            }
+        }
+
+    //Funciones Finales
+        function fn_GuargarMedioPre()
+        {
+            var valorPendiente = false;
+            var IDRECIBO = $("#divIDRECIBO").html();
+
+            if(IDRECIBO != ""){
+                fn_GuardaMedioPago(IDRECIBO);
+            }else{
+                fn_motivo();
+            }
+        }
+
+        function fn_GuardaMedioPago(recibo)
+        {
+            $("#loader_sys_btn_show").click();
+            var EmiEstab   = "";
+            var numRetencion = "";
+            var numMedDoc  = "";
+            var fechMedPag = "";
+            var fechVcto = "";
+            var bancMedPag = "";
+            var cuenMedPag = "";
+
+            switch ($("#tagMedioPago").val()) {
+                case "1":
+                    if($("#chNumCheque").val() == "")
+                    {
+                        alert("Debe de ingresar el numero de Cheque!");
+                        fn_focus('chNumCheque');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    var VARNUMREF = $("#chNumCheque").val();
+                    if( VARNUMREF.indexOf('.') >= 0)
+                    {
+                        alert("El numero de cheque no puede tener simbolos!");
+                        fn_focus('chNumCheque');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    if( parseInt($("#chNumCheque").val()) <= 0)
+                    {
+                        alert("El numero de cheque no puede ser 0!");
+                        fn_focus('chNumCheque');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    if($("#chtrBanco").val() == "")
+                    {
+                        alert("Debe de seleccionar el banco al cual pertenece el cheque!");
+                        fn_focus('chtrBanco');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if($("#chtrCuenta").val() == "")
+                    {
+                        alert("Debe de seleccionar la cuenta a la cual pertenece el cheque!");
+                        fn_focus('chtrCuenta');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    if(! $("#chtrefValor").is(":disabled"))
+                    {
+                        alert("Debe de iniciar el proceso de Medio de Pago!");
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    numMedDoc  = $("#chNumCheque").val();
+                    fechMedPag = $("#chFecha").val();
+                    bancMedPag = $("#chtrBanco").val();
+                    cuenMedPag = $("#chtrCuenta").val();
+                    break;
+                case "2":
+                    if($("#tranRef").val() == "")
+                    {
+                        alert("Debe de ingresar el numero de Referencia de la Transferencia!");
+                        fn_focus('tranRef');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    var VARNUMREF = $("#tranRef").val();
+                    if( VARNUMREF.indexOf('.') >= 0)
+                    {
+                        alert("El numero de referencia no puede tener simbolos!");
+                        fn_focus('tranRef');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    if( parseInt($("#tranRef").val()) <= 0)
+                    {
+                        alert("El numero de referencia no puede ser 0!");
+                        fn_focus('tranRef');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    if($("#chtrBanco").val() == "")
+                    {
+                        alert("Debe de seleccionar el banco al cual se realizara la Transferencia!");
+                        fn_focus('chtrBanco');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if($("#chtrCuenta").val() == "")
+                    {
+                        alert("Debe de seleccionar la cuenta a la cual se realizara la Transferencia!");
+                        fn_focus('chtrCuenta');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if(! $("#chtrefValor").is(":disabled"))
+                    {
+                        alert("Debe de iniciar el proceso de Medio de Pago!");
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    numMedDoc = $("#tranRef").val();
+                    fechMedPag =$("#tranFecha").val();
+                    bancMedPag =$("#chtrBanco").val();
+                    cuenMedPag =$("#chtrCuenta").val();
+                    break;
+                case "3":
+                    if(! $("#chtrefValor").is(":disabled"))
+                    {
+                        alert("Debe de iniciar el proceso de Medio de Pago!");
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    numMedDoc = "000";
+                    fechMedPag ="";
+                    bancMedPag ="";
+                    cuenMedPag ="";
+                    break;
+                case "4":
+                    if($("#retPtoEmi").val() == "")
+                    {
+                        alert("Debe de ingresar el numero de punto de emision!");
+                        fn_focus('retPtoEmi');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if($("#retPtoEst").val() == "")
+                    {
+                        alert("Debe de ingresar el numero de punto de establecimiento!");
+                        fn_focus('retPtoEst');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if($("#retNumRet").val() == "")
+                    {
+                        alert("Debe de ingresar el numero de retencion!");
+                        fn_focus('retNumRet');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if($("#retNumAuto").val() == "")
+                    {
+                        alert("Debe de ingresar el numero de autorizacion!");
+                        fn_focus('retNumAuto');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    if( parseInt($("#retPtoEmi").val()) <= 0)
+                    {
+                        alert("El numero de punto de emision no puede ser 0!");
+                        fn_focus('retPtoEmi');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if( parseInt($("#retPtoEst").val()) <= 0)
+                    {
+                        alert("El numero de punto de establecimiento no puede ser 0!");
+                        fn_focus('retPtoEst');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if( parseInt($("#retNumRet").val()) <= 0)
+                    {
+                        alert("El numero de retencion no puede ser 0!");
+                        fn_focus('retNumRet');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if( parseInt($("#retNumAuto").val()) <= 0)
+                    {
+                        alert("El numero de autorizacion no puede ser 0!");
+                        fn_focus('retNumAuto');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    if( $("#retPtoEmi").val().indexOf('.') >= 0)
+                    {
+                        alert("El numero de punto de emision no puede tener simbolos!");
+                        fn_focus('retPtoEmi');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if( $("#retPtoEst").val().indexOf('.') >= 0)
+                    {
+                        alert("El numero de punto de establecimiento no puede tener simbolos!");
+                        fn_focus('retPtoEst');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if( $("#retNumRet").val().indexOf('.') >= 0)
+                    {
+                        alert("El numero de retencion no puede tener simbolos!");
+                        fn_focus('retNumRet');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if( $("#retNumAuto").val().indexOf('.') >= 0)
+                    {
+                        alert("El numero de autorizacion no puede tener simbolos!");
+                        fn_focus('retNumAuto');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+
+                    if( $("#retPtoEmi").val().length < 3)
+                    {
+                        alert("El numero de punto de emision debe de tener 3 caracteres numericos!");
+                        fn_focus("retPtoEmi");
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if( $("#retPtoEst").val().length < 3)
+                    {
+                        alert("El numero de punto de establecimiento debe de tener 3 caracteres numericos!");
+                        fn_focus("retPtoEst");
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if( $("#retNumRet").val().length < 9)
+                    {
+                        alert("El numero de retencion debe de tener 9 caracteres numericos!");
+                        fn_focus("retNumRet");
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    if( $("#retNumAuto").val().length < 10)
+                    {
+                        alert("El numero de autorizacion debe de tener 10 caracteres numericos!");
+                        fn_focus("retNumAuto");
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                    
+                    EmiEstab = $("#retPtoEmi").val() +"-"+ $("#retPtoEst").val();
+                    numRetencion = $("#retNumRet").val();
+                    numMedDoc = $("#retNumAuto").val();
+                    fechMedPag = $("#retFechEmi").val();
+                    fechVcto = $("#retFechVcto").val();
+                    bancMedPag ="";
+                    cuenMedPag ="";
+
+                    break;
+            } 
+
+            if($("#tagMedioPago").val() != 4)
+            {
+                BDConsultaOBJ("SELECT RECIBO FROM APP_COBRANZA WHERE CARDCODE = '"+CARDCODE+"' AND BANCO = '"+$("#chtrBanco").val()+"' AND CUENTA = '"+$("#chtrCuenta").val()+"' AND  CAST(NUMEROREF as INTEGER) = '"+ (($("#tagMedioPago option:selected").text() == 'CHEQUE')? parseInt($("#chNumCheque").val()) : (($("#tagMedioPago option:selected").text() == 'TRANSFERENCIA')? parseInt($("#tranRef").val()) : "") )  +"' AND MEDIOPAGO = '"+$("#tagMedioPago option:selected").text()+"' ;", function (obj0) {
+                    var numChequeRep = false;
+                    var BDrecibo = 0;
+                    
+                    for (var i = 0; i < obj0.rows.length; i++) {
+                        var row0 = obj0.rows.item(i);
+                        BDrecibo = row0.RECIBO;
+                    }
+
+                    if(BDrecibo > 0 ){
+                        if(BDrecibo == recibo)
+                        {
+                            numChequeRep = false;  
+                        }else
+                        {
+                            numChequeRep = true;  
+                        }
+                    }
+
+                    if(numChequeRep == false)
+                    {   
+                        if(recibo != "")
+                        {
+                            BDConsulta("SELECT * FROM APP_COBRANZA WHERE RECIBO = '"+recibo+"' AND EMPRESA='"+masterEmpresa+"'  AND CARDCODE = '"+CARDCODE+"' AND SYNCESTADO = 0 ", function (obj1) {
+
+                                if(obj1.ESTADO == 'N'){
+                                    BDActualizacion("INSERT INTO APP_REGISTRO(QUERY,ESTADO,SYNCESTADO) VALUES('UPDATE TBL_COBRANZA SET NOTA = |El AC modifico los datos este registro| WHERE RECIBO_APP=|"+obj1.RECIBO+"| AND IDUSUARIOVENDEDOR =|"+obj1.IDUSUARIOVENDEDOR+"| AND EMPRESA=|"+obj1.EMPRESA+"| AND CARDCODE=|"+obj1.CARDCODE+"| AND IDMEDPAGO=|"+obj1.IDMEDPAGO+"| AND VALOR=|"+obj1.VALOR+"| ','0','0')");
+                                }
+
+                                BDActualizacion("UPDATE APP_COBRANZA SET CREATEDATE = datetime('now', 'localtime'), ESTADO='A', FECHAMEDPAGO='"+fechMedPag+"', NUMEROREF='"+numMedDoc+"', BANCO='"+bancMedPag+"', CUENTA='"+cuenMedPag+"' WHERE RECIBO='"+recibo+"' AND IDMEDPAGO='"+$("#tagMedioPago").val()+"' AND EMPRESA='"+masterEmpresa+"' AND CARDCODE = '"+CARDCODE+"' AND VALOR = '"+$("#chtrefValor").val()+"';");
+
+                                BDActualizacion("UPDATE APP_COBRANZA_DETALLE SET FECHAMEDPAGO='"+fechMedPag+"',CREATEDATE = datetime('now', 'localtime') WHERE RECIBO='"+recibo+"' AND IDMEDPAGO='"+$("#tagMedioPago").val()+"' AND EMPRESA='"+masterEmpresa+"' AND CARDCODE = '"+CARDCODE+"' ;");
+
+                                alert("El Recibo de Pago se actualizo correctamente!");
+                                $("#loader_sys_btn_hide").click();
+                                fn_CloseCaja();
+                                fn_CargarMedioPago();
+                            });
+                        }
+                        else
+                        {
+                          
+                            BDActualizacion("INSERT INTO APP_COBRANZA(IDUSUARIOVENDEDOR, EMPRESA, CARDCODE, CREATEDATE, FECHAMEDPAGO, IDMEDPAGO, MEDIOPAGO, NUMEROREF, BANCO, CUENTA, VALOR, SALDOFAVOR, SYNCESTADO, ESTADO,FECHAVCTO,EMISIONESTAB,RETENCION,CAMPO_1,CAMPO_2,CAMPO_5,CAMPO_6) VALUES ('"+masterUsuario+"','"+masterEmpresa+"','"+CARDCODE+"',datetime('now', 'localtime'),'"+fechMedPag+"','"+$("#tagMedioPago").val()+"','"+$("#tagMedioPago option:selected").text()+"','"+numMedDoc+"','"+bancMedPag+"','"+cuenMedPag+"','"+$("#chtrefValor").val()+"','"+$("#chtrefSaldoFavor").val()+"','0','A','','','','','','N','"+IDGESTION+"');" );
+
+                            BDConsulta("SELECT MAX(RECIBO) RECIBO FROM APP_COBRANZA WHERE EMPRESA='"+masterEmpresa+"' ", function (obj) {
+
+                                BDActualizacion("UPDATE APP_COBRANZA SET RECIBO_APP='"+obj.RECIBO+"' WHERE RECIBO='"+obj.RECIBO+"' AND IDMEDPAGO='"+$("#tagMedioPago").val()+"' AND EMPRESA='"+masterEmpresa+"' AND CARDCODE = '"+CARDCODE+"' ;" );
+
+                                for (var i = 0; i <= LINEACUOTA; i++) {
+                                    if($("#tdRecaInput"+i).val() != undefined){
+
+                                        var arrDocNumTipo = $("#tdDocNum"+i).html().split("-");
+                                        var arrCuota = $("#tdCuota"+i).html().split("/");
+                                        var newCuota = arrCuota[1] + "/" + arrCuota[0];
+
+                                        if(parseFloat($("#tdRecaInput"+i).val()) > 0)
+                                        {
+                                            BDActualizacion("INSERT INTO APP_COBRANZA_DETALLE (RECIBO, IDUSUARIOVENDEDOR, EMPRESA, CARDCODE, FECHAMEDPAGO, LINEA, IDMEDPAGO, DOCNUM, TIPODOC, CUOTA, PORCENTAJE, BASEREF,FECHADOC, FECHAVENC, TOTALCUOTA, TOTALAPLICADO, SYNCESTADO, CREATEDATE) VALUES('"+obj.RECIBO+"','"+masterUsuario+"','"+masterEmpresa+"','"+CARDCODE+"','"+fechMedPag+"','"+i+"','"+$("#tagMedioPago").val()+"','"+arrDocNumTipo[0]+"','"+arrDocNumTipo[1]+"','"+ newCuota +"','','','"+$("#tdFecDoc"+i).html()+"','"+$("#tdFecVen"+i).html()+"','"+$("#tdTotalCuota"+i).html()+"','"+$("#tdRecaInput"+i).val()+"','0',datetime('now', 'localtime'))");                                       
+                                            
+                                            BDActualizacion("UPDATE APP_CLIENTE_CUOTA SET RECAUDADO = ROUND(RECAUDADO +"+ $("#tdRecaInput"+i).val() +",2), ESTADO='A' WHERE DOCNUM = '"+ arrDocNumTipo[0] +"' AND TIPODOC= '"+ arrDocNumTipo[1] +"'  AND CUOTA = '"+ newCuota +"' AND EMPRESA='"+masterEmpresa+"' ;");
+
+                                            BDActualizacion("UPDATE APP_COBRANZA SET CAMPO_5='Y' WHERE RECIBO='"+obj.RECIBO+"' AND IDMEDPAGO='"+$("#tagMedioPago").val()+"' AND EMPRESA='"+masterEmpresa+"' AND CARDCODE = '"+CARDCODE+"' ;" );
+                                        }
+
+                                        if($("#tdMotivo"+i).html() != "")
+                                        {
+                                            BDActualizacion("INSERT INTO APP_COBRANZA_MOTIVO (IDUSUARIOVENDEDOR,EMPRESA,CARDCODE,TIPODOC,DOCNUM,CUOTA,MOTIVO,SOLICITUDRECLAMO,CREATEDATE,SYNCESTADO) VALUES('"+masterUsuario+"','"+masterEmpresa+"','"+CARDCODE+"','"+arrDocNumTipo[1]+"','"+arrDocNumTipo[0]+"','"+newCuota+"','"+$("#tdMotivo"+i).html()+"','"+$("#tdSR"+i).html()+"',datetime('now', 'localtime'),'0')");
+                                        }
+                                    }
+                                }
+                                alert("El Recibo de Pago se guardo correctamente!");
+                                $("#loader_sys_btn_hide").click();
+                                fn_CloseCaja();
+                                fn_CargarMedioPago();
+                            });
+                        }
+                    }
+                    else
+                    {
+                        var strMostrar = (($("#tagMedioPago option:selected").text() == 'CHEQUE') ? " cheque ":" referencia ");
+                        alert("El numero de "+strMostrar+" asociado a el banco y la cuenta ya existe! \nIngrese otro numero de "+strMostrar+"");
+                        if($("#tagMedioPago option:selected").text() == 'CHEQUE'){
+                            fn_focus('chNumCheque');
+                        }else{
+                            fn_focus('tranRef');
+                        }
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                });
+            }
+            else
+            {
+                BDConsultaOBJ("SELECT RECIBO FROM APP_COBRANZA WHERE CARDCODE = '"+CARDCODE+"' AND  NUMEROREF = '"+ numMedDoc +"' AND MEDIOPAGO = '"+$("#tagMedioPago option:selected").text()+"' AND EMISIONESTAB = '"+ EmiEstab +"' AND RETENCION = '"+ numRetencion +"' ;", function (obj0) {
+                    var numChequeRep = false;
+                    var BDrecibo = 0;
+                    
+                    for (var i = 0; i < obj0.rows.length; i++) {
+                        var row0 = obj0.rows.item(i);
+                        BDrecibo = row0.RECIBO;
+                    }
+
+                    if(BDrecibo > 0 ){
+                        if(BDrecibo == recibo)
+                        {
+                            numChequeRep = false;  
+                        }else
+                        {
+                            numChequeRep = true;  
+                        }
+                    }
+
+                    if(numChequeRep == false)
+                    {   
+                        if(recibo != "")
+                        {
+                            BDConsulta("SELECT * FROM APP_COBRANZA WHERE RECIBO = '"+recibo+"' AND EMPRESA='"+masterEmpresa+"'  AND CARDCODE = '"+CARDCODE+"' AND SYNCESTADO = 0 ", function (obj1) {
+
+                                if(obj1.ESTADO == 'N'){
+                                    BDActualizacion("INSERT INTO APP_REGISTRO(QUERY,ESTADO,SYNCESTADO) VALUES('UPDATE TBL_COBRANZA SET NOTA = |El AC modifico los datos este registro| WHERE RECIBO_APP=|"+obj1.RECIBO+"| AND IDUSUARIOVENDEDOR =|"+obj1.IDUSUARIOVENDEDOR+"| AND EMPRESA=|"+obj1.EMPRESA+"| AND CARDCODE=|"+obj1.CARDCODE+"| AND IDMEDPAGO=|"+obj1.IDMEDPAGO+"| AND VALOR=|"+obj1.VALOR+"| ','0','0')");
+                                }
+
+                                BDActualizacion("UPDATE APP_COBRANZA SET CREATEDATE = datetime('now', 'localtime'), ESTADO='A', FECHAMEDPAGO='"+fechMedPag+"', NUMEROREF='"+numMedDoc+"', BANCO='"+bancMedPag+"', CUENTA='"+cuenMedPag+"',FECHAVCTO='"+fechVcto+"',EMISIONESTAB='"+EmiEstab+"',RETENCION='"+numRetencion+"' WHERE RECIBO='"+recibo+"' AND IDMEDPAGO='"+$("#tagMedioPago").val()+"' AND EMPRESA='"+masterEmpresa+"' AND CARDCODE = '"+CARDCODE+"';" );
+
+                                BDActualizacion("UPDATE APP_COBRANZA_DETALLE SET FECHAMEDPAGO='"+fechMedPag+"',CREATEDATE = datetime('now', 'localtime') WHERE RECIBO='"+recibo+"' AND IDMEDPAGO='"+$("#tagMedioPago").val()+"' AND EMPRESA='"+masterEmpresa+"' AND CARDCODE = '"+CARDCODE+"' ;" );
+                            
+                                alert("El Recibo de Pago se actualizo correctamente!");
+                                $("#loader_sys_btn_hide").click();
+                                fn_CloseCaja();
+                                fn_CargarMedioPago();
+                            });                        
+                        }
+                        else
+                        {
+                            var saveRet = false;
+                            for (var i = 0; i <= LINEAFACTRET; i++) {
+                                if($("#valorRet"+i).val() != undefined){
+                                    if($("#factapli").val() != null)
+                                    {
+                                        if(parseFloat( parseFloat($("#valorRet"+i).val()) ) > 0)
+                                        {
+                                             saveRet = true;                                   
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(saveRet == false)
+                            {
+                                alert("Al momento no cuenta con facturas para realizar retencion, Seleccione otro medio de pago!");
+                                $("#loader_sys_btn_hide").click();
+                                return;
+                            }
+
+                            BDConsulta("SELECT * FROM APP_CLIENTE_FACTURA WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ CARDCODE +"' AND DOCNUM = '"+ $("#factapli").val() +"' AND ESTADO = 'A' ORDER BY DOCNUM ASC", function (objFact) 
+                            {
+                                var DateDocumento = new Date(parseInt(objFact.DOCDATE.split("-")[0]),parseInt(objFact.DOCDATE.split("-")[1]) - 1,parseInt(objFact.DOCDATE.split("-")[2]));
+                                var DateDocumentoIng = new Date(parseInt(fechMedPag.split("-")[0]),parseInt(fechMedPag.split("-")[1]) - 1,parseInt(fechMedPag.split("-")[2]));
+                                console.log(DateDocumento +"   -   "+DateDocumentoIng);
+                                if (DateDocumento.getTime() > DateDocumentoIng.getTime())
+                                {
+                                    alert("La fecha del medio de pago " + fechMedPag + " , es menor que la factura " + objFact.DOCDATE + "!");
+                                    $("#loader_sys_btn_hide").click();
+                                    return;
+                                }
+
+                                BDActualizacion("INSERT INTO APP_COBRANZA(IDUSUARIOVENDEDOR, EMPRESA, CARDCODE, CREATEDATE, FECHAMEDPAGO, IDMEDPAGO, MEDIOPAGO, NUMEROREF, BANCO, CUENTA, VALOR, SALDOFAVOR, SYNCESTADO, ESTADO,FECHAVCTO,EMISIONESTAB,RETENCION,CAMPO_1,CAMPO_2,CAMPO_5,CAMPO_6) VALUES ('"+masterUsuario+"','"+masterEmpresa+"','"+CARDCODE+"',datetime('now', 'localtime'),'"+fechMedPag+"','"+$("#tagMedioPago").val()+"','"+$("#tagMedioPago option:selected").text()+"','"+numMedDoc+"','"+bancMedPag+"','"+cuenMedPag+"','"+$("#retValTotal").val()+"','0','0','A','"+fechVcto+"','"+EmiEstab+"','"+numRetencion+"','"+ $("#RetValNet").html() +"','"+ $("#RetValIva").html() +"','Y','"+IDGESTION+"');" );
+
+                                BDConsulta("SELECT MAX(RECIBO) RECIBO FROM APP_COBRANZA WHERE EMPRESA='"+masterEmpresa+"' ", function (obj) {
+
+                                    BDConsultaOBJ("SELECT * FROM APP_CLIENTE_CUOTA WHERE BASEREF = '"+$("#factapli").val()+"' AND EMPRESA = '"+masterEmpresa+"' AND CARDCODE='"+CARDCODE+"' AND (SALDO_CUOTA-RECAUDADO)>= "+$("#retValTotal").val()+" ORDER BY FECHAVENC,CUOTA  LIMIT 1;", function (objCuota) {
+
+                                        BDActualizacion("UPDATE APP_COBRANZA SET RECIBO_APP='"+obj.RECIBO+"' WHERE RECIBO='"+obj.RECIBO+"' AND IDMEDPAGO='"+$("#tagMedioPago").val()+"' AND EMPRESA='"+masterEmpresa+"' AND CARDCODE = '"+CARDCODE+"' ;" );
+
+                                        for (var i = 0; i <= LINEAFACTRET; i++) 
+                                        {
+                                            if($("#valorRet"+i).val() != undefined)
+                                            {
+                                                if(parseFloat($("#valorRet"+i).val()) > 0)
+                                                {
+                                                    BDActualizacion("INSERT INTO APP_COBRANZA_DETALLE (RECIBO, IDUSUARIOVENDEDOR, EMPRESA, CARDCODE, FECHAMEDPAGO, LINEA, IDMEDPAGO, DOCNUM, TIPODOC, CUOTA, PORCENTAJE, BASEREF, FECHADOC, FECHAVENC, TOTALCUOTA, TOTALAPLICADO, SYNCESTADO, CREATEDATE) VALUES('"+obj.RECIBO+"','"+masterUsuario+"','"+masterEmpresa+"','"+CARDCODE+"','"+fechMedPag+"','"+i+"','"+$("#tagMedioPago").val()+"','','','','"+ $("#retapli"+i).val()+"-"+ $("#retapli"+i+" option:selected").text() +"','"+$("#factapli").val()+"','"+ objFact.DOCDATE +"','','0','"+$("#valorRet"+i).val()+"','0',datetime('now', 'localtime'))");
+
+                                                    if(i == LINEAFACTRET)
+                                                    {
+                                                        for (var K = 0; K < objCuota.rows.length; K++) 
+                                                        {
+                                                          var rowCuota = objCuota.rows.item(K);
+                                                                                                     
+                                                            BDActualizacion("UPDATE APP_COBRANZA_DETALLE SET DOCNUM = '"+rowCuota.DOCNUM+"', CUOTA='"+rowCuota.CUOTA+"', FECHAVENC='"+rowCuota.FECHAVENC+"', TIPODOC='"+rowCuota.TIPODOC+"',TOTALCUOTA='"+rowCuota.SALDO_CUOTA+"' WHERE EMPRESA = '"+masterEmpresa+"' AND CARDCODE = '"+CARDCODE+"' AND RECIBO = '"+obj.RECIBO+"';");
+
+                                                            BDActualizacion("UPDATE APP_CLIENTE_CUOTA SET RECAUDADO = ROUND(RECAUDADO +"+ $("#retValTotal").val() +",2), ESTADO='A' WHERE DOCNUM = '"+ rowCuota.DOCNUM +"' AND TIPODOC= '"+ rowCuota.TIPODOC +"'  AND CUOTA = '"+ rowCuota.CUOTA +"' AND EMPRESA='"+masterEmpresa+"' ;");
+                                                        }
+                                                    }                                                                                   
+                                                }
+                                            }
+                                        }
+
+                                        BDActualizacion("UPDATE APP_CLIENTE_FACTURA SET ESTADO = 'P' WHERE DOCNUM = '"+ $("#factapli").val() +"' AND CARDCODE= '"+ CARDCODE +"'  AND EMPRESA='"+masterEmpresa+"' ;");
+
+                                        alert("El Recibo de Pago se guardo correctamente!");
+                                        $("#loader_sys_btn_hide").click();
+                                        fn_CloseCaja();
+                                        fn_CargarMedioPago();
+                                    });
+                                });
+                            });
+                        }
+                    }
+                    else
+                    {
+                        alert("El numero de punto de emision, punto de establecimiento, retencion en el formato '000-000-000000000' ya existe! \nIngrese otro numero de punto de emision, punto de establecimiento o numero de retencion");
+                        fn_focus('retPtoEmi');
+                        $("#loader_sys_btn_hide").click();
+                        return;
+                    }
+                });
+            }
+        }
+
+        function fn_cambioMotivo(id)
+        {
+            if($("#tagMotivoCuota" + id).val()==1)
+            {
+                $("#tdSolRecMotInput"+id).prop("disabled",false);
+                $("#tdSolRecMotInput"+id).val('');
+            }
+            else
+            {
+                $("#tdSolRecMotInput"+id).prop("disabled",true);
+                $("#tdSolRecMotInput"+id).val('      ');
+            }
+        }
+
+    //Funciones Rpt
+        function fn_OpenCajaRpt() {
+            alert('Recuerde que para gestionar esta opcion se requiere Conexion a Internet...');
+            $("#loader_sys_btn_show").click();
+            var heightpx = $("#content_master").height();
+            $("#AppOptionRpt").html("<iframe id='ifrmPedido' width='100%' height='"+heightpx+"' frameborder='0'  marginheight='0' marginwidth='0'  src='"+syncServer.replace("/Sync","") +"?AppEmpresa=" + masterEmpresa.trim() + "&AppUsr=" + masterUsuario + "&Controlador=" + escape("/Vendedor/InformeCobranza") + "'></iframe>");
+            setTimeout(function(){$('#AppOptionRpt').show();}, 500); 
+            setTimeout(function(){$("#loader_sys_btn_hide").click();}, 3000); 
+            fn_CambiarPage('containerCobPri', 'containerCobRpt');
+        }
+
+        function fn_CloseCajaRpt() 
+        {
+            fn_CambiarPage('containerCobRpt','containerCobPri');
+            $("#AppOptionRpt").html("");
+        }
+
+    //Funciones Sync
+        function fn_EnviarCobranza()
+        { 
+            $("loader_sys_btn_show").click();
+            var idEnvia = "";
+            if(LINEACOB > 0)
+            {
+                    for (var i = 0; i <= LINEACOB; i++) 
+                    {   
+                        if($("#tdIDRECIBO"+i).html() != undefined)
+                        {
+                            if( $("#tdCHKENVIA"+i).is(':checked'))
+                            {
+                                if(idEnvia == ""){
+                                    idEnvia = idEnvia + "'" + $("#tdIDRECIBO"+i).html() + "'";
+                                }else{
+                                    idEnvia = idEnvia + ",'" + $("#tdIDRECIBO"+i).html() + "'";
+                                }
+                            }
+                        }
+                    }
+                    
+                    if(idEnvia!="")
+                    {
+                        $("loader_sys_btn_hide").click();
+                        fn_SyncCobranza(idEnvia);
+                        alert("Se realizo el envio de los medios de pago seleccionados!\nEspere el mensaje de sincronización exitosa,\nde no ser asi realizar una sincronización general.");
+                        $("#chkTodos").prop( "checked", false );
+                        //loadOption(10000003);
+                    }
+                    else
+                    {
+                        $("loader_sys_btn_hide").click();
+                        alert("No cuenta con medios de pago seleccionados!");
+                        $("#chkTodos").prop( "checked", false );
+                    }
+                    
+            }
+            else
+            {
+                $("loader_sys_btn_hide").click();
+                alert("No existen registros de medios de pago!");
+                $("#chkTodos").prop( "checked", false );
+
+            }
+        }
+
+        function fn_SyncCobranza(idEnvia)
+        {
+            var ARR_STR_COB = "RECIBO|IDUSUARIOVENDEDOR|EMPRESA|CARDCODE|CREATEDATE|FECHAMEDPAGO|IDMEDPAGO|MEDIOPAGO|NUMEROREF|BANCO|CUENTA|VALOR|SALDOFAVOR|FECHAVCTO|EMISIONESTAB|RETENCION|CAMPO_1|CAMPO_2|CAMPO_5|CAMPO_6";
+            
+            var ARR_INS_COB = "RECIBO_APP,IDUSUARIOVENDEDOR,EMPRESA,CARDCODE,CREATEDATE,FECHAMEDPAGO,IDMEDPAGO,MEDIOPAGO,NUMEROREF,BANCO,CUENTA,VALOR,SALDOFAVOR,FECHAVCTO,EMISIONESTAB,RETENCION,CAMPO_1,CAMPO_2,CAMPO_5,CAMPO_6";
+
+            var ARR_STR_COB_DET = "RECIBO|IDUSUARIOVENDEDOR|EMPRESA|CARDCODE|FECHAMEDPAGO|LINEA|IDMEDPAGO|DOCNUM|TIPODOC|CUOTA|BASEREF|PORCENTAJE|FECHADOC|FECHAVENC|TOTALCUOTA|TOTALAPLICADO|CREATEDATE";
+            
+            var ARR_INS_COB_DET = "RECIBO_APP,IDUSUARIOVENDEDOR,EMPRESA,CARDCODE,FECHAMEDPAGO,LINEA,IDMEDPAGO,DOCNUM,TIPODOC,CUOTA,BASEREF,PORCENTAJE,FECHADOC,FECHAVENC,TOTALCUOTA,TOTALAPLICADO,CREATEDATE";
+
+            SyncApp_Web("SELECT * FROM APP_COBRANZA WHERE RECIBO IN ("+idEnvia+") AND (SYNCESTADO IS NULL OR SYNCESTADO = 0) AND ESTADO != 'N' @@SELECT APP_COBRANZA_DETALLE.RECIBO, APP_COBRANZA.RECIBO_APP, APP_COBRANZA_DETALLE.IDUSUARIOVENDEDOR, APP_COBRANZA_DETALLE.EMPRESA, APP_COBRANZA_DETALLE.CARDCODE, APP_COBRANZA_DETALLE.FECHAMEDPAGO, APP_COBRANZA_DETALLE.LINEA, APP_COBRANZA_DETALLE.IDMEDPAGO, APP_COBRANZA_DETALLE.DOCNUM, APP_COBRANZA_DETALLE.TIPODOC, APP_COBRANZA_DETALLE.CUOTA, APP_COBRANZA_DETALLE.FECHADOC, APP_COBRANZA_DETALLE.FECHAVENC, APP_COBRANZA_DETALLE.TOTALCUOTA, APP_COBRANZA_DETALLE.TOTALAPLICADO, APP_COBRANZA_DETALLE.CREATEDATE,APP_COBRANZA_DETALLE.BASEREF,APP_COBRANZA_DETALLE.PORCENTAJE FROM APP_COBRANZA_DETALLE JOIN APP_COBRANZA ON APP_COBRANZA.RECIBO=APP_COBRANZA_DETALLE.RECIBO WHERE APP_COBRANZA_DETALLE.RECIBO IN ("+idEnvia+") AND (APP_COBRANZA_DETALLE.SYNCESTADO IS NULL OR APP_COBRANZA_DETALLE.SYNCESTADO = 0) AND APP_COBRANZA.ESTADO != 'N' ", 'INSERT INTO TBL_COBRANZA (' + ARR_INS_COB + ') OUTPUT Inserted.RECIBO VALUES ( @@INSERT INTO TBL_COBRANZA_DETALLE (' + ARR_INS_COB_DET + ')VALUES ( ' , ' );@@ );', 'IN@@IN',ARR_STR_COB + "@@" + ARR_STR_COB_DET ,'}UPDATE APP_COBRANZA SET SYNCESTADO= 1  ?  WHERE  |RECIBO|IDUSUARIOVENDEDOR|EMPRESA|CARDCODE|IDMEDPAGO|FECHAVCTO|EMISIONESTAB|RETENCION$ @@}UPDATE APP_COBRANZA_DETALLE SET SYNCESTADO= 1  ?  WHERE |RECIBO|LINEA|EMPRESA|CARDCODE|DOCNUM|TIPODOC|CUOTA|TOTALCUOTA$ ','}SELECT * FROM  TBL_COBRANZA WHERE  |RECIBO_APP|IDUSUARIOVENDEDOR|EMPRESA|CARDCODE|CREATEDATE|FECHAMEDPAGO|IDMEDPAGO|MEDIOPAGO|NUMEROREF|BANCO|CUENTA|VALOR|SALDOFAVOR|FECHAVCTO|EMISIONESTAB|RETENCION@@}SELECT * FROM TBL_COBRANZA_DETALLE WHERE  |RECIBO_APP|IDUSUARIOVENDEDOR|EMPRESA|CARDCODE|FECHAMEDPAGO|LINEA|IDMEDPAGO|DOCNUM|TIPODOC|CUOTA|BASEREF|PORCENTAJE|FECHADOC|FECHAVENC|TOTALCUOTA|TOTALAPLICADO|CREATEDATE', false,true);
+        }
+
+</script>
+
+<div role="container" id="containerCobPri">
+    <div data-role="header" >
+        <a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-tag ui-btn-icon-notext"></a>        
+        <h1 style="font-size: 16px;">Cobranza</h1>
+    </div>
+    <div>
+        <div class="ui-grid-a" style="padding: 19px 10px 10px 10px;">
+            <div class="ui-block-a"><h3>Medios de Pago</h3></div>
+            <div class="ui-block-b" style="text-align: right;">
+                <a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-clock ui-btn-icon-notext ui-btn-inline"></a>
+                <strong id="App_GestTitleCob" class="" > Fecha</strong>
+            </div>
+        </div>
+        <div style="padding: 0px 10px 0px 10px;">
+            <h3><strong style="color:#00a65a;font-style: italic;">$&nbsp;</strong><strong id="idValorTot">0.00</strong>&nbsp;&nbsp;&nbsp;<strong style="color:#00a65a;font-style: italic;">#&nbsp;</strong><strong id="idCantTot">0.00</strong><h3>
+            <h3><strong style="color:#0073b7;font-style: italic;">$&nbsp;</strong><strong id="idValorSel">0.00</strong>&nbsp;&nbsp;&nbsp;<strong style="color:#0073b7;font-style: italic;">#&nbsp;</strong><strong id="idCantSel">0.00</strong><h3>
+        </div>
+
+        <div class="ui-grid-a" style="padding: 10px 10px 10px 10px;">
+            <div class="ui-block-a">
+                <input type="checkbox" name="chkTodos" id="chkTodos"  onclick="fn_selTodos();">
+                <label for="chkTodos" style="border-radius: 0;width: 30%;">Todos</label>
+            </div>
+            <div class="ui-block-b" style="text-align: right;">
+                <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0;margin: .5em 0;" onclick="fn_OpenCaja()">Nuevo</a>    
+            </div>
+        </div>
+
+        <div style="overflow-y: scroll;overflow-x: scroll;max-height: 600px;padding: 0px 10px 20px 15px;" >
+            <ul data-role="listview" data-inset="true" id="tagLineasCobranza" style="font-size: 5px;">
+            </ul>
+        </div>
+
+        <div style="text-align: right;">
+            <a href="#" class="ui-btn ui-btn-icon-left ui-icon-delete ui-btn-inline" style="" onclick="">Cancelar</a>    
+            <a href="#" class="ui-btn cus-pri-ele ui-btn-icon-left ui-icon-bullets ui-btn-inline" style="" onclick="fn_OpenCajaRpt();">Reporte Cobranza</a>    
+            <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="display: none" id= "btnEnviaCob" onclick="fn_EnviarCobranza();">Enviar Cobranza&nbsp;&nbsp;</a>    
+        </div>
+    </div>
+</div>
+
+<div role="container" id="containerCobPro" style="display:none">
+    <div class="ui-field-contain">
+        <label class="cus-label" for="tagMedioPago"><strong>Medio de Pago:</strong></label>
+        <select id="tagMedioPago" onchange="fn_MostrarOption();" style="width: 100%;height: 55px;">
+            <option value="1" >CHEQUE</option>
+            <option value="2" >TRANSFERENCIA</option>
+            <option value="3" >EFECTIVO</option>
+            <option value="4" >RETENCION</option>
+        </select>
+    </div>
+
+    <div class="ui-field-contain" name="cheque" style="display:none">
+        <label class="cus-label"><strong>Fecha Cheque:</strong></label>
+        <input type="text" id="chFecha" onkeypress="return false;" style="padding-right: 7px;height: 55px;" onclick="datePickerAndroid('chFecha','Fecha Cheque', 0 , 1 );">
+    </div>
+
+    <div class="ui-field-contain" name="cheque" style="display:none">
+        <label class="cus-label"><strong># Cheque:</strong></label>
+        <input type="text" id="chNumCheque" onclick="fn_focus('chNumCheque');" style="padding-right: 7px;height: 55px;">
+    </div>
+
+    <div class="ui-field-contain" name="transf" style="display:none">
+        <label class="cus-label"><strong>Fecha Transf:</strong></label>
+        <input type="text" id="tranFecha" onkeypress="return false;" style="padding-right: 7px;height: 55px;" onclick="datePickerAndroid('tranFecha','Fecha Transferencia', 1 , 1 );">
+    </div>
+
+    <div class="ui-field-contain" name="transf" style="display:none">
+        <label class="cus-label"><strong ># Referencia:</strong></label>
+        <input type="text" id="tranRef" style="padding-right: 7px;height: 55px;" onclick="fn_focus('tranRef');">
+    </div>
+
+    <div class="ui-field-contain" name="transfcheque" style="display:none">
+        <label class="cus-label"><strong>Banco:</strong></label>
+        <select  id="chtrBanco" onchange="fn_selCuenta();" style="width: 100%;height: 55px;"><option></option></select>
+    </div>
+
+    <div class="ui-field-contain" name="transfcheque" style="display:none">
+        <label class="cus-label"><strong># Cuenta:</strong></label>
+        <select  id="chtrCuenta" style="width: 100%;height: 55px;" disabled><option></option></select>
+    </div>
+
+    <div class="ui-field-contain" name="allValue" style="display:none">
+        <label class="cus-label"><strong>Valor:</strong></label>
+        <div style="display: flex;">
+            <input type="text" id="chtrefValor" data-wrapper-class="controlgroup-textinput ui-btn" onclick="fn_focus('chtrefValor');">
+            <button class="cus-btn cus-btn-new cus-btn-suc" id="btnCargaCuota" onclick="fn_cargaCuota();">✓</button>
+            <button class="cus-btn cus-btn-new cus-btn-dan" id="btnCancelaCuota" onclick="fn_cancelaCargaCuota();">X</button>
+        </div>
+    </div>
+
+    <div class="ui-field-contain" name="allValue" style="display:none">
+        <label class="cus-label"><strong>Saldo a Favor:</strong></label>
+        <input type="text" id="chtrefSaldoFavor" style="background: white;height: 55px;" readonly>
+    </div>
+
+    <div class="ui-field-contain" name="retencion" style="display:none">
+        <label class="cus-label"><strong id="MedNumRet"># Retencion:</strong></label>
+        <input type="text" id="retNumRet" maxlength="9" style="padding-right: 7px;height: 55px;" >
+    </div>
+
+    <div class="ui-field-contain" name="retencion" style="display:none">
+        <label class="cus-label"><strong>Fecha Emi. de Retencion:</strong></label>
+        <input type="text" id="retFechEmi"  onclick="datePickerAndroid('retFechEmi','Fecha Emision de retencion', 0 , 1 );" onkeypress="return false" onchange="fn_TipoRetencion()" style="padding-right: 7px;height: 70px;" >
+    </div>
+
+    <div class="ui-field-contain" name="retencion" style="display:none">
+        <label class="cus-label"><strong>Punto Emision:</strong></label>
+        <input type="text" id="retPtoEmi" maxlength="3" style="padding-right: 7px;height: 55px;" >
+    </div>
+
+    <div class="ui-field-contain" name="retencion" style="display:none">
+        <label class="cus-label"><strong>Punto Establec:</strong></label>
+        <input type="text" id="retPtoEst" maxlength="3" style="padding-right: 7px;height: 55px;" >
+    </div>
+
+    <div class="ui-field-contain" name="retencion" style="display:none">
+        <label class="cus-label"><strong># Autorizacion:</strong></label>
+        <input type="text" id="retNumAuto" maxlength="10" style="padding-right: 7px;height: 55px;" >
+    </div>
+
+    <div class="ui-field-contain" name="retencion" style="display:none">
+        <label class="cus-label"><strong>Fecha Cad. Auto.:</strong></label>
+        <input type="text" id="retFechVcto" onclick="datePickerAndroid('retFechVcto','Fecha Cad. Autorizacion', 0 , 1 );" onkeypress="return false" style="padding-right: 7px;height: 70px;">
+    </div>
+
+    <div class="ui-field-contain" name="retencion" style="display:none">
+        <label class="cus-label"><strong>Valor Total:</strong></label>
+        <input type="text" id="retValTotal" style="padding-right: 7px;background: white;height: 55px;" readonly>
+    </div>
+
+    <div name="retencion" style="display:none">
+        <div class="ui-grid-a">
+            <div class="ui-block-a"></div>
+            <div class="ui-block-b">
+                <input type="radio" name="filtroRet" value="E" id="TipoRetE" onclick="fn_TipoRetencion()">
+                <label for="TipoRetE" style="border-radius: 0;">Electronica</label>
+                <input type="radio" name="filtroRet" value="M" id="TipoRetM" onclick="fn_TipoRetencion()" checked>
+                <label for="TipoRetM" style="border-radius: 0;">Manual</label>           
+            </div>
+        </div>
+    </div>
+
+    <div id="bodyListCuota" style="display:none">
+        <div style="margin-top:15px;margin-bottom:15px;font-size: 18px" id="bodyListCuotaFiltro">
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-nada ui-btn-inline ui-mini" style="margin: 0;margin: .5em 0;" >Vencidas</a>
+                    <a href="#" class="ui-btn cus-dan-ele ui-btn-icon-left ui-icon-nada ui-btn-inline ui-mini" style="margin: 0;margin: .5em 0;" >Por Pagar</a>
+                </div>
+                <div class="ui-block-b">
+                    <input type="radio" name="filtro" value="V" id="filVenc" onclick="fn_cargaCuota();" style="border-radius: 0;display:none">
+                    <label for="filVenc" style="border-radius: 0;display:none">Vencidas</label>
+                    
+                    <input type="radio" name="filtro" value="P" id="filProt" onclick="fn_cargaCuota();">
+                    <label for="filProt" style="border-radius: 0;">Protesto/Canje</label>   
+
+                    <input type="radio" name="filtro" value="T" id="filTod" onclick="fn_cargaCuota();" checked>
+                    <label for="filTod" style="border-radius: 0;" >Todas</label>           
+                </div>
+            </div>
+        </div>       
+
+        <div style="margin-top:7px;" >
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    <a href="#" class="ui-btn ui-btn-icon-left ui-icon-check ui-btn-inline" id="btnSelFactura" onclick="fn_SeleccionarDocumento();" style="display:none;">Selecciona Factura</a>
+                </div>
+                <div class="ui-block-b" style="text-align: right;">
+                    <a href="#" class="ui-btn cus-dan-ele ui-btn-icon-left ui-icon-delete ui-btn-inline" id="btnBorraSug" onclick="fn_BorrarSugerido();" style="display:none;">Borrar Recaudado</a>
+                </div>
+            </div>
+        </div>            
+
+        <div style="margin-top:2px;margin-bottom:15px;" >
+            <div style="display: block; background-color:white; border:1px solid #929191;border-radius:3px;max-height: 400px;overflow-y:auto" id="" >
+                <table style="font-size: 12px;width: 100%;">
+                    <tbody id="AppCuotaLista"> 
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="margin-top:15px;margin-bottom:15px;font-size: 18px" id="bodyListCuotaTotales">
+             <div class="ui-grid-b">
+                <div class="ui-block-a">
+                    Tot. Cuota: <strong><span id="totCuota">0.00</span></strong>
+                </div>
+                <div class="ui-block-b" style="text-align: center;">
+                    Tot. Recaudado: <strong><span id="totReca">0.00</span></strong>
+                </div>
+                <div class="ui-block-c" style="text-align: right;">
+                    Tot. Pendiente: <strong><span id="totPend">0.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="bodyListCuotaRet" style="display:none">
+        <div style="margin-top:15px;margin-bottom:0px;display:;text-align: right;" id="btnMasRet">
+            <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-plus ui-btn-inline" id="btnSelFactura" onclick='fn_nuevaFactRet();'>Agregar</a>
+        </div>  
+        <div style="margin-top:0px;margin-bottom:15px;" >
+            <div style="display: block; background-color:white; border:1px solid #929191;border-radius:3px;max-height: 400px;overflow-y:auto">
+                <table style="font-size: 14px;width: 100%;">
+                    <tbody id="AppCuotaListaRet" style="font-size: 18px;"> 
+                      
+                    <tbody>
+                </table>
+            </div>    
+        </div>
+        <div style="margin-top:15px;margin-bottom:15px;font-size: 18px" id="bodyListCuotaTotalesRet">
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    Valor Neto: <strong><span id="RetValNet">0.00</span></strong>
+                </div>
+                <div class="ui-block-b" style="text-align: right;">
+                    Iva: <strong><span id="RetValIva">0.00</span></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="divIDRECIBO" style="display:none"></div>
+
+    <div style="margin-top:10px;padding: 3px;height:10%;text-align: right;">
+        <a href="#" class="ui-btn ui-btn-icon-left ui-icon-delete ui-btn-inline" onclick="fn_CloseCaja();">Cancelar</a>
+        <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" onclick="fn_GuargarMedioPre();">Guardar</a>
+    </div>
+</div>
+
+<div role="container" id="containerCobMot" style="display:none">
+    <div data-role="header" >
+        <a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-tag ui-btn-icon-notext"></a>
+        <h1 style="font-size: 16px;">Motivos de no Cobranza</h1>
+    </div>
+    <div>
+        <div style="margin-top:2px;margin-bottom:15px;margin-top: 20px" >
+            <div style="display: block; background-color:white; border:1px solid #929191;border-radius:3px;max-height: 400px;overflow-y:auto" id="" >
+                <table style="font-size: 12px;width: 100%;">
+                    <tbody id="AppMotivoFactLista"> 
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="text-align: right;">
+            <a href="#" class="ui-btn ui-btn-icon-left ui-icon-delete ui-btn-inline" style="margin: 0" onclick="fn_CloseCajaMot();">Cancelar</a>    
+            <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0;" onclick="fn_GuardaCuotaMot();">Guardar Motivo</a>    
+        </div>
+    </div>
+</div>
+
+<div role="container" id="containerCobRpt" style="display:none">
+    <div data-role="header" >
+        <a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-tag ui-btn-icon-notext"></a>
+        <h1 style="font-size: 16px;">Reporte de Cobranza</h1>
+    </div>
+    <div>
+        <div id="AppOptionRpt" style='padding-top: 15px;height: 100%;'></div>
+
+        <div style="text-align: right;">
+            <a href="#" class="ui-btn ui-btn-icon-left ui-icon-delete ui-btn-inline" style="margin: 0" onclick="fn_CloseCajaRpt();">Cancelar</a>    
+        </div>
+    </div>
+</div>
+
+<div role="container" id="containerCobFac" style="display:none">
+    <div data-role="header" >
+        <a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-tag ui-btn-icon-notext"></a>
+        <h1 style="font-size: 16px;">Seleccion de Facturas</h1>
+    </div>
+    <div>
+        <div class="ui-grid-b"  style="padding-top: 20px">
+            <div class="ui-block-a" style="text-align: center"><span class="text-blue"><strong>Total Medio Pago</strong></span></div>
+            <div class="ui-block-b" style="text-align: center"><span class="text-blue"><strong>Total Recaudado</strong></span></div>
+            <div class="ui-block-c" style="text-align: center"><span class="text-blue"><strong>Total Pendiente</strong></span></div>
+
+            <div class="ui-block-a" style="text-align: center"><span class="" id="FactValMedPago">0.00</span></div>
+            <div class="ui-block-b" style="text-align: center"><span class="" id="FactValRec">0.00</span></div>
+            <div class="ui-block-c" style="text-align: center"><span class="" id="FactValPend">0.00</span></div>
+        </div>
+
+        <div class="ui-grid-d"  style="padding-top: 40px">
+            <div class="ui-block-a" style="text-align: center"><span class="text-blue"><strong>Facturas</strong></span></div>
+            <div class="ui-block-b" style="text-align: center"><span class="text-blue"><strong>Monto Tot.</strong></span></div>
+            <div class="ui-block-c" style="text-align: center"><span class="text-blue"><strong>Valor Rec.</strong></span></div>
+            <div class="ui-block-d" style="text-align: center"><span class="text-blue"><strong>Saldo</strong></span></div>
+            <div class="ui-block-e" style="text-align: center"><span class="text-blue"><strong>Saldo</strong></span></div>
+
+            <div class="ui-block-a" style="text-align: center">
+                <div id="SelFactFT">
+                    
+                </div>
+            </div>
+            <div class="ui-block-b" style="text-align: center">
+                <input type='text' id='SelFactMT' style='width: 100%;text-align: center;height: 50px;border: 0px;background-color: #fff;' value="0.00" readonly/>
+            </div>
+            <div class="ui-block-c" style="text-align: center">
+                <input type='text' id='SelFactVA' style='width: 100%;text-align: center;height: 50px ' onclick="fn_focus('SelFactVA');" oninput="fn_SeleccionarDocValorChange()" value="0.00"/>
+            </div>
+            <div class="ui-block-d" style="text-align: center">
+                <input type='text' id='SelFactSP' style='width: 100%;text-align: center;height: 50px;border: 0px;background-color: #fff;' value="0.00" readonly/>
+            </div>
+            <div class="ui-block-e" style="text-align: center">
+                <button class="cus-btn cus-btn-new cus-btn-suc" id="SelFactAgregar" onclick='fn_SeleccionarDocAgregar()'>✓</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div data-role="header" style="margin-top: 40px">
+        <a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-tag ui-btn-icon-notext"></a>
+        <h1 style="font-size: 16px;">Facturas Seleccionadas</h1>
+    </div>
+
+     <div>
+        <div class="ui-grid-d"  style="padding-top: 20px">
+            <div class="ui-block-a" style="text-align: center"><span class="text-blue"><strong>Facturas</strong></span></div>
+            <div class="ui-block-b" style="text-align: center"><span class="text-blue"><strong>Monto Tot.</strong></span></div>
+            <div class="ui-block-c" style="text-align: center"><span class="text-blue"><strong>Valor Rec.</strong></span></div>
+            <div class="ui-block-d" style="text-align: center"><span class="text-blue"><strong>Saldo</strong></span></div>
+            <div class="ui-block-e" style="text-align: center"><span class="text-blue"><strong></strong></span></div>
+        </div>
+
+        <div style="padding-top: 10px" id ="SelFactAgregadas">
+           
+        </div>
+    </div>
+
+    <div style="text-align: right;padding-top: 20px">
+        <a href="#" class="ui-btn ui-btn-icon-left ui-icon-delete ui-btn-inline" style="margin: 0" onclick="fn_CloseCajaSelFact();">Cancelar</a>    
+        <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0;" onclick="fn_SeleccionarDocAplicar();">Aplicar valor </a>    
+    </div>
+</div>

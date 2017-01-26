@@ -116,7 +116,15 @@ function loadOption2(ContenedorGlobal) {
     $("#App_content").load(ContenedorGlobal, function () {
         setTimeout(function(){
             $( "div[data-role=page]" ).page( "destroy" ).page();
-        }, 500); 
+        }, 50); 
+    });
+}
+
+function loadOptionOp(ContenedorGlobal,Option) {
+    $("#"+ContenedorGlobal).load(Option, function () {
+        setTimeout(function(){
+            $( "div[data-role=page]" ).page( "destroy" ).page();
+        }, 50); 
     });
 }
 

@@ -1,0 +1,481 @@
+<script type="text/javascript">
+    
+    var Arr_CLIENTE = [];
+    var i_LINES = 0;
+    var e = jQuery.Event("keypress");e.which = 13;e.keyCode=13;
+    var testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+
+    var FECHAAPERTURA = new Date();
+    var IDGESTION=0;
+    var CARDCODE="";
+    var AppDecimales= 4 ;
+
+    (function(){
+        fn_RealoadGestion(function(RETORNO){
+        });
+    })();
+
+    function fn_RealoadGestion(RETORNO)
+    {
+        $("#loader_sys_btn_show").click();
+        BDConsultaOBJ("SELECT * FROM APP_GESTION WHERE ESTADOGESTION='A' AND EMPRESA = '"+ masterEmpresa.trim() +"';", function (obj) {
+            for (var i = 0; i < obj.rows.length; i++) {
+                var row = obj.rows.item(i);
+                IDGESTION = row.IDGESTION;
+                CARDCODE = row.CARDCODE;
+                FECHAAPERTURA= new Date(row.FECHAAPERTURA);
+            } 
+
+            if(obj.rows.length>0){
+                fn_ShowWidgetGestion(CARDCODE);
+                RETORNO(true);
+            }else{
+                fn_ListaClientesRutero();
+                $("#containerGestList").show();
+                RETORNO(false);
+            }
+
+            $("#loader_sys_btn_hide").click();
+        });
+    }
+
+    function fn_ListaClientesRutero() {
+        fn_fechaformato(FECHAAPERTURA,0,function(RETORNO){
+            $("#AGestTitle").html(RETORNO);
+        });
+
+        var strFecha = "";
+        fn_fechaformato(FECHAAPERTURA,2,function(RET){
+           strFecha=RET;
+        });
+        
+        $("#ContainerBodyRut").html("");
+
+        BDConsultaOBJ("SELECT *,(SELECT COUNT(*) FROM APP_GESTION WHERE APP_GESTION.CARDCODE = APP_CLIENTE.CARDCODE AND date(APP_GESTION.FECHAAPERTURA)='"+strFecha+"') AS 'GESTION' FROM APP_CLIENTE JOIN APP_RUTERO ON APP_CLIENTE.CARDCODE = APP_RUTERO.CARDCODE  AND APP_CLIENTE.EMPRESA = APP_RUTERO.EMPRESA WHERE APP_CLIENTE.EMPRESA ='" + masterEmpresa.trim() + "' AND date(APP_RUTERO.FECHACREACION) = '"+strFecha+"' ORDER BY CAST(APP_RUTERO.HORA as REAL) ASC ;", function (obj) {
+            var strList = "";
+            var HaveGestion="";
+
+            if (obj.rows.length == 0) {
+                strList = strList + "<li'><span class='handle ui-sortable-handle'><i class='fa fa-map'></i></span><span class='text'>No cuenta con un Rutero existente o aprobado!</span></li>"
+                $("#ContainerBodyRut").append(strList);
+                return;
+            }
+
+            for (var i = 0; i < obj.rows.length; i++) 
+            {
+                var row = obj.rows.item(i);
+                var GETDIA = FECHAAPERTURA.getDay();
+                var strDIA = "";
+
+                switch (GETDIA) {
+                    case 1: strDIA = "LUNES"; break;
+                    case 2: strDIA = "MARTES"; break;
+                    case 3: strDIA = "MIERCOLES"; break;
+                    case 4: strDIA = "JUEVES"; break;
+                    case 5: strDIA = "VIERNES"; break;
+                    case 6: strDIA = "SABADO"; break;
+                    case 7: strDIA = "DOMINGO"; break;
+                }
+
+                if(row.GESTION>0){
+                    HaveGestion=" cus-gestionado ";
+                }else{
+                    HaveGestion=" cus-ele-white ";
+                }
+                
+                if (row.FRECUENCIA == "DIARIO") {
+                    strList = strList + "<div class='widget-btn-container' onclick='fn_ConfirmarGestion(\"" + row.CARDNAME + "\",\"" + row.CARDCODE + "\",\"" + row.HORA + ":00" + "\",\"P\");'><a href='#' class='ui-btn ui-btn-icon-left ui-icon-clock widget-btn widget-btn-primary "+HaveGestion+"' >Hora de Visita: " + row.HORA + ":00<br><strong class=''>" + row.CARDNAME + "</strong></a><input name='NotCARDCODE' type='hidden' value='"+row.CARDCODE+"'/></div>";
+                }
+
+                if (row.FRECUENCIA == "SEMANAL" && row.DIA == strDIA) {
+                    strList = strList + "<div class='widget-btn-container' onclick='fn_ConfirmarGestion(\"" + row.CARDNAME + "\",\"" + row.CARDCODE + "\",\"" + row.HORA + ":00" + "\",\"P\");'><a href='#' class='ui-btn ui-btn-icon-left ui-icon-clock widget-btn widget-btn-primary "+HaveGestion+"' >Hora de Visita: " + row.HORA + ":00<br><strong class=''>" + row.CARDNAME + "</strong></a><input name='NotCARDCODE' type='hidden' value='"+row.CARDCODE+"'/></div>";
+                }
+                
+                if (row.FRECUENCIA == "QUINCENAL" && row.DIA == strDIA) {
+                    strList = strList + "<div class='widget-btn-container' onclick='fn_ConfirmarGestion(\"" + row.CARDNAME + "\",\"" + row.CARDCODE + "\",\"" + row.HORA + ":00" + "\",\"P\");'><a href='#' class='ui-btn ui-btn-icon-left ui-icon-clock widget-btn widget-btn-primary "+HaveGestion+"' >Hora de Visita: " + row.HORA + ":00<br><strong class=''>" + row.CARDNAME + "</strong></a><input name='NotCARDCODE' type='hidden' value='"+row.CARDCODE+"'/></div>";
+                }
+
+                if (row.FRECUENCIA == "MENSUAL" && row.DIA == strDIA) {
+                    strList = strList + "<div class='widget-btn-container' onclick='fn_ConfirmarGestion(\"" + row.CARDNAME + "\",\"" + row.CARDCODE + "\",\"" + row.HORA + ":00" + "\",\"P\");'><a href='#' class='ui-btn ui-btn-icon-left ui-icon-clock widget-btn widget-btn-primary "+HaveGestion+"' >Hora de Visita: " + row.HORA + ":00<br><strong class=''>" + row.CARDNAME + "</strong></a><input name='NotCARDCODE' type='hidden' value='"+row.CARDCODE+"'/></div>";
+                }
+            }
+
+            $("#ContainerBodyRut").append(strList);
+            $("#ContainerBodyRut").show()
+            $("#btnGesCli").show();
+        });
+    } 
+
+    function fn_ListaClientesOtros()
+    {
+        var inCARDCODE = document.getElementsByName("NotCARDCODE")
+        var strCARDCODE="";
+        for (var i = 0; i <inCARDCODE.length; i++) {
+            if(i == 0){
+                strCARDCODE = strCARDCODE+"'"+inCARDCODE[i].value+"'";
+            }
+            strCARDCODE = strCARDCODE+",'"+inCARDCODE[i].value+"'";
+        };
+
+        $("#btnGesCli").hide();
+        $("#xbtnGesCli").show();
+
+        $("#ContainerBodyRut").html("");
+        BDConsultaOBJ("SELECT * FROM APP_CLIENTE WHERE EMPRESA ='" + masterEmpresa.trim() + "'  AND CARDCODE NOT IN ("+strCARDCODE+") ORDER BY CARDNAME ASC", function (obj) {
+            for (var i = 0; i < obj.rows.length; i++) {
+                var row = obj.rows.item(i);
+                $("#ContainerBodyRut").append("<div class='widget-btn-container' onclick='fn_ConfirmarGestion(\"" + row.CARDNAME + "\",\"" + row.CARDCODE + "\",\"" + row.HORA + "00:00" + "\",\"N\");'><a href='#' class='ui-btn ui-btn-icon-left ui-icon-clock widget-btn widget-btn-danger cus-ele-white' > <br><strong class=''>" + row.CARDNAME + "</strong></a></div>");
+            }
+        });
+    }
+
+    function fn_CancelListaClientesOtros()
+    {
+        $("#xbtnGesCli").hide();
+        fn_ListaClientesRutero();
+    }
+
+    function fn_ConfirmarGestion(CARDNAME,CARDCOD,HORA,TIPO)
+    {
+        var res = confirm("¿Desea Iniciar la gestion del cliente "+CARDNAME +"?");
+        if (res == true) {
+
+            BDConsulta("SELECT MAX(IDGESTION) IDGESTION FROM APP_GESTION", function (obj) {
+                IDGESTION = obj.IDGESTION + 1;
+                var strFecha = "";
+                var HORAFIN = FECHAAPERTURA.getHours() + ":" + FECHAAPERTURA.getMinutes();
+
+                fn_fechaformato(FECHAAPERTURA,1,function(RETORNO){
+                    strFecha=RETORNO;
+                });
+
+                //objGps.continueGps(function(){
+                    if(TIPO=="P"){
+                        fn_restarHoras(HORA,HORAFIN,function(RETORNO_HORA){
+                            BDActualizacion("INSERT INTO APP_GESTION (IDGESTION,FECHAAPERTURA,FECHACIERRE,DIFERENCIATIEMPO,CARDCODE,CARDNAME,EMPRESA,IDUSUARIOVENDEDOR,LATAPERTURA,LONAPERTURA,ESTADOGESTION,PLANIFICADO)  VALUES("+IDGESTION+",'"+strFecha+"','','"+ RETORNO_HORA +"','"+CARDCOD+"','"+CARDNAME+"','"+masterEmpresa+"','"+masterUsuario+"','"+"','"+"','A','"+TIPO+"');");
+                        });
+                    }else{
+                        BDActualizacion("INSERT INTO APP_GESTION (IDGESTION,FECHAAPERTURA,FECHACIERRE,DIFERENCIATIEMPO,CARDCODE,CARDNAME,EMPRESA,IDUSUARIOVENDEDOR,LATAPERTURA,LONAPERTURA,ESTADOGESTION,PLANIFICADO)  VALUES("+IDGESTION+",'"+strFecha+"','','00:00','"+CARDCOD+"','"+CARDNAME+"','"+masterEmpresa+"','"+masterUsuario+"','"+"','"+"','A','"+TIPO+"');");
+                    }
+
+                    fn_ShowWidgetGestion(CARDCOD);
+                    CARDCODE=CARDCOD;
+                /*    objGps.getCoordenates(function(){},function(){},false,"UPDATE APP_GESTION SET LONAPERTURA={LONGITUD},LATAPERTURA={LATITUD} WHERE IDGESTION="+IDGESTION+"");
+                },function(){
+                });*/
+            });
+        }
+    }
+
+    function fn_ShowWidgetGestion(CARDCODE)
+    {
+        $("#loader_sys_btn_show").click();
+        setTimeout(function(){
+            $("#containerGestList").hide();
+            $("#containerGestForm").show();
+
+            fn_ListaClientes(CARDCODE,function (RETORNO) { 
+                for (var i = 0; i < Arr_CLIENTE.rows.length; i++) {
+                    var row = Arr_CLIENTE.rows.item(i);
+                    $("#AppGestionCardname").html(row.CARDNAME);
+                    $("#tagCUPO0").html(row.CUPO);
+                    $("#tagSALDO0").html(row.SALDO);
+                    $("#tagDISPONIBLE0").html(row.DISPONIBLE);
+                    $("#tagVENTAMES0").html(row.VENTACORRIENTE);
+                    $("#tagNOTES0").html(row.NOTES);
+                    $("#tagVALIDTO0").html(row.VALIDTO);
+                    $("#tagESTADO0").html(row.ESTADO);
+                    $("#tagVIP0").html(row.VIP);
+                    $("#tagCOND0").html(row.CONDICIONESPAGO);
+                    $("#IDSALDOCOB0").html($("#IDSALDOCOB0").html().replace("#CARDCODE", row.CARDCODE));
+                }
+                $("#containerFormBody").show();
+                $("#loader_sys_btn_hide").click();
+            });
+            
+        },200);
+    }
+
+    function fn_ListaClientes(CARDCODE,RETORNO_CALLBACK) 
+    {
+        BDConsultaOBJ("SELECT * FROM APP_CLIENTE WHERE EMPRESA ='" + masterEmpresa.trim() + "' AND CARDCODE= '"+CARDCODE+"' ORDER BY CARDNAME ASC", function (obj) {
+            Arr_CLIENTE = obj;
+            RETORNO_CALLBACK('1');
+        });
+    }
+
+    function fn_GetCobranza()
+    {
+        loadOptionOp('containerFormBodyOp','pages/10000201.html');
+        fn_GoToOp()
+    }
+
+    function fn_GetPedido()
+    {
+        loadOptionOp('containerFormBodyOp','pages/10000202.html');
+        fn_GoToOp()
+    }
+
+    function fn_GetActividad()
+    {
+        loadOptionOp('containerFormBodyOp','pages/10000203.html');
+        fn_GoToOp()
+    }
+
+    function fn_GetCierre()
+    {
+        loadOptionOp('containerFormBodyOp','pages/10000204.html');
+        fn_GoToOp()
+    }
+
+    function fn_GoToOp()
+    {
+        $("#containerFormBody").hide();
+        $("#containerFormBodyOp").show();
+    }
+
+    function fn_ReturnMain()
+    {
+        $("#containerFormBody").show();
+        $("#containerFormBodyOp").hide();
+        $("#containerFormBodyOp").html("");
+    }
+
+    function fn_CambiarPage(OldPage, NewPage)
+    {
+      $("#"+OldPage).hide();
+      $("#"+NewPage).show();
+    }
+
+    function datePickerAndroid(idInputDate,title,MXDate,MNDate)
+    {
+        var MXDTE = "";
+        var MNDTE = "";
+        var dateNow = new Date()
+        var dateMin = new Date(dateNow.getFullYear(), 0, 1);
+
+        if(MXDate == 1){MXDTE = dateNow.getTime()}
+        if(MNDate == 1){MNDTE = dateMin.getTime()}
+
+        var options = {
+            date: new Date(),
+            mode: 'date',
+            androidTheme : 5,
+            titleText: title,
+            maxDate:MXDTE,
+            minDate:MNDTE
+        };
+
+        datePicker.show(
+            options, 
+            function(date){fn_fechaformato(date,2,function(RETORNO){$("#"+idInputDate).val(RETORNO)})}, 
+            function(error){}
+        );
+    }
+
+    function fn_focus(obj)
+    {
+        var element = document.getElementById(obj);
+        var value = element.value;
+        element.focus();
+        setTimeout(function(){
+            element.setSelectionRange(0, value.length);
+        },50);
+        $("#" + obj).select();
+        setTimeout(function(){
+          $("#" + obj).select();
+        },50);
+    }
+</script>
+
+<div role="container" id="containerGestList" style="background: white;display: none;padding: 3px;">
+    
+    <div data-role="header" id="ContainerHead">
+        <a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-clock ui-btn-icon-notext"></a>
+        <h1 id="AGestTitle" style="font-size: 14px;"></h1>
+    </div>
+    <div>
+        <div style="text-align: right;padding-top: 10px;padding-bottom: 10px;">
+            <a href="#" id="btnGesCli" class="ui-btn cus-suc-ele ui-btn-icon-right ui-icon-user ui-btn-inline" style="margin: 0;display: none;" onclick="fn_ListaClientesOtros();">Gestionar Otro Cliente</a>
+            <a href="#" id="xbtnGesCli" class="ui-btn ui-btn-icon-right ui-icon-delete ui-btn-inline" style="margin: 0;display: none;" onclick="fn_CancelListaClientesOtros();">Cancelar</a>
+        </div>
+        <div id="ContainerBodyRut" style="display: none;overflow-y: auto;height: 400px"></div>
+    </div>
+</div>
+
+<div role="container" id="containerGestForm" style="display: none;;padding: 3px;">
+    <div id="containerFormHead">
+        <div data-role="collapsibleset" data-content-theme="a" data-iconpos="right" >
+            <div data-role='collapsible' data-collapsed='true' data-iconpos="right" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+                <h3 class="cus-ele-white">
+                    <a href="#" class="ui-btn ui-icon-user ui-btn-icon-left ui-corner-all"  style="padding-top: 3px;padding-bottom: 3px;border: none" id="AppGestionCardname"></a>
+                </h3>
+                <ul data-role="listview" data-theme="a">
+                    <li style="padding: 3px !important; height: 55px;">
+                        <div class="ui-grid-a" style="padding: 19px 10px 10px 10px;">
+                            <div class="ui-block-a">Cupo de Cliente</div>
+                            <div class="ui-block-b" style="text-align: right;"><span id="tagCUPO0" class="ui-li-count"></span></div>
+                        </div>
+                    </li>
+                    <li style="padding: 3px !important; height: 55px;">
+                        <div class="ui-grid-a" style="padding-left: 10px;padding-top: 5px;">
+                            <div class="ui-block-a" id="IDSALDOCOB0">
+                                <a href="#" id="btnGesCli" class="ui-btn cus-pri-ele ui-btn-icon-right ui-icon-eye ui-btn-inline" style="margin: 0" onclick="InformeSaldosCobranza('#CARDCODE');">Saldo Cobranza</a>
+                            </div>
+                            <div class="ui-block-b" style="text-align: right;padding: 10px;"><span id="tagSALDO0" class="ui-li-count"></span></div>
+                        </div>
+                    </li>
+                    <li style="padding: 3px !important; height: 55px;">
+                        <div class="ui-grid-a" style="padding: 19px 10px 10px 10px;">
+                            <div class="ui-block-a">Saldo de Disponible</div>
+                            <div class="ui-block-b" style="text-align: right;"><span id="tagDISPONIBLE0" class="ui-li-count"></span></div>
+                        </div>
+                    </li>
+                    <li style="padding: 3px !important; height: 55px;">
+                        <div class="ui-grid-a" style="padding: 19px 10px 10px 10px;">
+                            <div class="ui-block-a">Venta del Mes</div>
+                            <div class="ui-block-b" style="text-align: right;"><span id="tagVENTAMES0" class="ui-li-count"></span></div>
+                        </div>
+                    </li>
+                    <li style="padding: 3px !important; height: 55px;">
+                        <div class="ui-grid-a" style="padding: 19px 10px 10px 10px;">
+                            <div class="ui-block-a">Condiciones de Pago</div>
+                            <div class="ui-block-b" style="text-align: right;"><span id="tagCOND0" class="ui-li-count"></span></div>
+                        </div>
+                    </li>
+                    <li style="padding: 3px !important; height: 55px;">
+                        <div class="ui-grid-a" style="padding: 19px 10px 10px 10px;">
+                            <div class="ui-block-a">Nota Interna</div>
+                            <div class="ui-block-b" style="text-align: right;overflow-x: scroll;" id="tagNOTES0">Nota Interna</div>
+                        </div>
+                    </li>
+                    <li style="padding: 3px !important; height: 55px;">
+                        <div class="ui-grid-a" style="padding: 19px 10px 10px 10px;">
+                            <div class="ui-block-a">Valido Hasta</div>
+                            <div class="ui-block-b" style="text-align: right;"><span id="tagVALIDTO0" class="ui-li-count"></span></div>
+                        </div>
+                    </li>
+                    <li style="padding: 3px !important; height: 55px;">
+                        <div class="ui-grid-a" style="padding: 19px 10px 10px 10px;">
+                            <div class="ui-block-a">Estado</div>
+                            <div class="ui-block-b" style="text-align: right;"><span id="tagESTADO0" class="ui-li-count"></span></div>
+                        </div>
+                    </li>
+                    <li style="padding: 3px !important; height: 55px;">
+                        <div class="ui-grid-a" style="padding: 19px 10px 10px 10px;">
+                            <div class="ui-block-a">Cliente VIP</div>
+                            <div class="ui-block-b" style="text-align: right;"><span id="tagVIP0" class="ui-li-count"></span></div>
+                        </div>
+                    </li>
+                    <li style="padding: 3px !important; height: 55px;">
+                        <div class="ui-grid-a" style="padding: 19px 10px 10px 10px;">
+                            <div class="ui-block-a">Mis Apuntes</div>
+                            <div class="ui-block-b" style="text-align: right;"><span id="tagAPUNTES0" class="ui-li-count"></span></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="containerFormBody" style="display: none;background: white;padding: 15px;">
+        <div class="widget-btn-container" onclick="fn_GetCobranza()">
+            <a href="#" class="ui-btn ui-btn-icon-left ui-icon-edit widget-btn widget-btn-danger cus-ele-white" >
+                Cobranzas Relacionadas<br><strong class="widget-strong">Cobranza</strong>
+            </a>
+        </div>
+        <div class="widget-btn-container" onclick="fn_GetPedido()">
+            <a href="#" class="ui-btn ui-btn-icon-left ui-icon-bullets widget-btn widget-btn-danger cus-ele-white" >
+                Pedidos de Cliente<br><strong class="widget-strong">Pedido</strong>
+            </a>
+        </div>
+        <div class="widget-btn-container" onclick="fn_GetActividad()">
+            <a href="#" class="ui-btn ui-btn-icon-left ui-icon-comment widget-btn widget-btn-danger cus-ele-white" >
+                Actividades Relacionadas<br><strong class="widget-strong">Actividad</strong>
+            </a>
+        </div>
+        <div class="widget-btn-container" onclick="fn_GetCierre()">
+            <a href="#" class="ui-btn ui-btn-icon-left ui-icon-action widget-btn widget-btn-danger cus-ele-white" >
+                Fin de Gestion del cliente Aperturado<br><strong class="widget-strong">Cierre Gestion</strong>
+            </a>
+        </div>
+    </div>
+
+    <div id="containerFormBodyOp" style="display: none;background: white;padding: 15px;">
+    </div>    
+</div>
+
+<script type="text/javascript">
+    function fn_fechaformato(FECHA,TIPO,RETORNO)
+    {
+        var DIA = "";
+        var GETDIA = FECHA.getDay();
+        var GMONTH = FECHA.getMonth()+1;
+        var GDATE = FECHA.getDate();
+        var GHOUR = FECHA.getHours();
+        var GMIN = FECHA.getMinutes();
+        var DAY ="";
+        var MONTH ="";
+        var HOUR ="";
+        var MIN ="";
+        DAY = ((GDATE.toString().length > 1)? GDATE : "0"+GDATE.toString());
+        MONTH = ((GMONTH.toString().length > 1)? GMONTH : "0"+GMONTH.toString());
+        HOUR = ((GHOUR.toString().length > 1)? GHOUR : "0"+GHOUR.toString());
+        MIN = ((GMIN.toString().length > 1)? GMIN : "0"+GMIN.toString());
+
+        if(TIPO==0){
+            switch (GETDIA) {
+                case 1:      DIA = "LUNES"; break;
+                case 2:      DIA = "MARTES"; break;
+                case 3:      DIA = "MIERCOLES"; break;
+                case 4:      DIA = "JUEVES"; break;
+                case 5:      DIA = "VIERNES"; break;
+                case 6:      DIA = "SABADO"; break;
+                case 7:      DIA = "DOMINGO"; break;
+            }
+            DIA=DIA+"  "+DAY+"/"+MONTH +"/"+FECHA.getFullYear();
+        }
+
+        if(TIPO==1){
+            DIA= FECHA.getFullYear()+"-"+ MONTH +"-"+DAY+" "+HOUR+":"+MIN;
+        }
+
+        if(TIPO==2){
+            DIA= FECHA.getFullYear()+"-"+ MONTH +"-"+DAY;
+        }
+
+        RETORNO(DIA);
+    }
+
+    function fn_restarHoras(INICIO,FIN,RETORNO_HORA) 
+    {
+        inicio = INICIO;
+        fin = FIN;
+        
+        inicioMinutos = parseInt(inicio.substr(3,2));
+        inicioHoras = parseInt(inicio.substr(0,2));
+        
+        finMinutos = parseInt(fin.substr(3,2));
+        finHoras = parseInt(fin.substr(0,2));
+
+        transcurridoMinutos = finMinutos - inicioMinutos;
+        transcurridoHoras = finHoras - inicioHoras;
+        
+        if (transcurridoMinutos < 0) {
+            transcurridoHoras--;
+            transcurridoMinutos = 60 + transcurridoMinutos;
+        }
+        
+        horas = transcurridoHoras.toString();
+        minutos = transcurridoMinutos.toString();
+        
+        if (horas.length < 2) {
+            horas = "0"+horas;
+        }
+        
+        if (horas.length < 2) {
+            horas = "0"+horas;
+        }
+        RETORNO_HORA(horas+":"+minutos);
+    }
+</script>
