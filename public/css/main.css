@@ -116,8 +116,10 @@
     {
         width: 40px !important;
         height: 40px !important;
-        background-size: 30px 25px !important;
-        border-radius: 2em;
+        background-size: 69% !important;
+        border-radius: 0 !important;
+        top: 40% !important;
+
     }
 
     .cus-btn-sin-radius:after
@@ -133,22 +135,22 @@
     .widget-btn
     {
         margin:0px !important;
-        height: 60px;
+        height: 86px;
         padding-top: 21px;
         padding-bottom: 0px;
         text-align: left;
-        padding-left: 85px;
-        font-size: 13px;
+        padding-left: 110px;
+        font-size: 16px;
     }
 
     .widget-btn:after
     {
         margin:0px !important;
         top: 8%;
-        height: 67px;
-        width: 67px;
+        height: 90px;
+        width: 90px;
         border-radius: 0em;
-        background-size: 30px 25px !important;
+        background-size: 40% !important;
     }
 
     .widget-btn-primary:after
@@ -178,7 +180,7 @@
 
     .widget-strong
     {
-        font-size: 18px;
+        font-size: 22px;
     }
 
     .cus-gestionado
@@ -280,4 +282,37 @@
         margin-bottom: 7px; 
         text-align:center;
         color: #ff9c00;
+    }
+
+    .btn-lg-left
+    {
+        font-size: 19px;
+        padding: 20px 57px 20px 16px;
+    }
+
+    .btn-lg-left:after
+    {
+        top: 38%;
+        width: 40px;
+        height: 40px;
+        background-size: 50%;
+    }
+
+    .btn-lg-right
+    {
+        font-size: 19px;
+        padding: 20px 16px 20px 57px;
+    }
+
+    .btn-lg-right:after
+    {
+        top: 38%;
+        width: 40px;
+        height: 40px;
+        background-size: 50%;
+    }
+
+    .ui-select div
+    {
+        padding: 18px;
     }

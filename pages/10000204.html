@@ -1,5 +1,6 @@
 <script type="text/javascript">
     (function(){
+        $("#containerAct").hide();
         BDConsulta("SELECT count(*) 'CONT' FROM APP_PEDIDO WHERE IDGESTION = '"+IDGESTION+"' AND CARDCODE = '"+CARDCODE+"' AND EMPRESA = '"+ masterEmpresa.trim()+"'", function (obj) {
             if(obj.CONT==0)
             {
@@ -7,6 +8,7 @@
                 alert("No ha ingresado ningun pedido!");
                 $("#App_Motivo").show();
             }
+            $("#containerAct").show();
         });   
 
         BDConsulta("SELECT * FROM APP_PLAN_TRABAJO WHERE CARDCODE = '"+CARDCODE+"';", function (obj1) {
@@ -98,7 +100,8 @@
         </fieldset>
 
         <div style="text-align: right;padding-top: 12px">
-            <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0" onclick="fn_SaveGestion();">Fin de Gestion</a>    
+            <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete ui-btn-inline" style="" onclick="fn_ReturnMain()">Cancelar</a>
+            <a href="#" class="ui-btn btn-lg-right cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0" onclick="fn_SaveGestion();">Fin de Gestion</a>    
         </div>
 
     </div>

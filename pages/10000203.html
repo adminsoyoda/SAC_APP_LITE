@@ -101,24 +101,25 @@
         <select id="opt_ListaResponsable"></select>
 
         <label style="padding-top: 30px;"><strong>Item(Opcional):</strong></label>
-        <input type="text" id="tagITEMNAMEAct" disabled="">
+        <input type="text" id="tagITEMNAMEAct" readonly style="height: 55px;" >
         <input type="hidden" id="tagITEMCODEAct">
         <div data-role="controlgroup" data-type="horizontal">
-            <a href="#" class="ui-btn ui-btn-inline" style="margin: 0" onclick="fn_GoToListItem();">Seleccionar Item</a>
-            <a href="#" class="ui-btn cus-dan-ele ui-btn-inline" style="margin: 0" onclick="$('#tagITEMNAMEAct').val('');$('#tagITEMCODEAct').val('');">Quitar</a>
+            <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-plus ui-btn-inline" style="margin: 0" onclick="fn_GoToListItem();">Seleccionar Item</a>
+            <a href="#" class="ui-btn btn-lg-left ui-btn-icon-right ui-icon-delete cus-dan-ele ui-btn-inline" style="margin: 0" onclick="$('#tagITEMNAMEAct').val('');$('#tagITEMCODEAct').val('');">Quitar</a>
         </div>
 
         <textarea placeholder="Detalle de la Actividad" style="margin-top: 30px;" id="Op_Nota"></textarea>
         <div style="text-align: right;">
-            <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0" onclick="fn_SaveActividad();">Ingresar Actividad</a>    
+            <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete ui-btn-inline" style="" onclick="fn_ReturnMain()">Cancelar</a>
+            <a href="#" class="ui-btn btn-lg-right cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0" onclick="fn_SaveActividad();">Ingresar Actividad</a>    
         </div>
     </div>
 </div>
 
 <div role="container" id="containerItem" style="padding: 15px;background: white;height: 100%x;display: none">
-    <a href="#" class="ui-btn ui-icon-delete ui-btn-icon-right ui-corner-all" style="float: right; top: -10px;" onclick="fn_ReturnAct()">Cerrar</a>  
-    <div style="padding: 50px 20px 0px 20px;">
-      <input type="text" id="tagSearchITEMCODE" value="" placeholder="Atributo del item a buscar" onkeypress="fn_ListaItemsSearch(event)">
+    <a href="#" class="ui-btn btn-lg-left ui-icon-delete ui-btn-icon-right ui-corner-all" style="float: right; top: -10px;" onclick="fn_ReturnAct()">Cerrar</a>  
+    <div style="padding: 70px 20px 0px 20px;">
+      <input type="text" id="tagSearchITEMCODE" style="height: 55px;" placeholder="Atributo del item a buscar" onkeypress="fn_ListaItemsSearch(event)">
     </div>
     <div style="overflow-y: scroll;height: 600px;padding: 0px 20px 0px 20px;" >
         <ul data-role="listview" data-inset="true" id="tagItemsSearch_Lineas" style="font-size: 15px;">
