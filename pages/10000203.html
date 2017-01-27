@@ -1,6 +1,11 @@
 <script type="text/javascript">
         
     (function() {
+        $("#containerAct").hide();
+        setTimeout(function() {
+            $("#containerAct").show();
+        }, 100);
+
         $("#opt_ListaResponsable").html("");
         BDConsultaOBJ("SELECT * FROM APP_RESPONSABLE ORDER BY DEPARTAMENTO ASC", function (obj) {
             for (var i = 0; i < obj.rows.length; i++) {

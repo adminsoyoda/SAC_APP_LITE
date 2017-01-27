@@ -1,6 +1,6 @@
 <script type="text/javascript">
     (function(){
-        $("#containerAct").hide();
+        $("#containerGest").hide();
         BDConsulta("SELECT count(*) 'CONT' FROM APP_PEDIDO WHERE IDGESTION = '"+IDGESTION+"' AND CARDCODE = '"+CARDCODE+"' AND EMPRESA = '"+ masterEmpresa.trim()+"'", function (obj) {
             if(obj.CONT==0)
             {
@@ -8,7 +8,9 @@
                 alert("No ha ingresado ningun pedido!");
                 $("#App_Motivo").show();
             }
-            $("#containerAct").show();
+            setTimeout(function() {
+                $("#containerGest").show();
+            }, 100);
         });   
 
         BDConsulta("SELECT * FROM APP_PLAN_TRABAJO WHERE CARDCODE = '"+CARDCODE+"';", function (obj1) {
@@ -69,7 +71,7 @@
         $("#loader_sys_btn_hide").click();
     }
 </script>
-<div role="container" id="containerAct">
+<div role="container" id="containerGest">
     <div data-role="header" >
         <a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-tag ui-btn-icon-notext"></a>
         <h1 style="font-size: 16px;">Cierre de Gestion</h1>

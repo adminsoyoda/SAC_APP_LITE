@@ -39,12 +39,14 @@
 
     (function()
     {
+        $("#containerCobPri").hide();
         fn_fechaformato(new Date(),0,function(RETORNO){
             $("#App_GestTitleCob").html(RETORNO);
         });
         setTimeout(function() {
             fn_CargarMedioPago();    
-        }, 50);
+            $("#containerCobPri").show();
+        }, 100);
     })();
 
     function fn_CargarMedioPago()
