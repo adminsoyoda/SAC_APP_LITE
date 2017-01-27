@@ -165,9 +165,8 @@
         $("#bodyListCuota").hide();
         $("#bodyListCuotaRet").hide();
 
-        $("#btnSelFactura").hide();
-        $("#btnBorraSug").hide();
-
+        $("#bodyListCuotaFiltro").hide();
+        
         setTimeout(function(){
             switch ($("#tagMedioPago").val()) 
             {
@@ -263,7 +262,7 @@
         if($("#tagMedioPago").val()!="4")
         {
             $("#bodyListCuota").show();
-            $("#bodyListCuotaFiltro").show();
+            //$("#bodyListCuotaFiltro").show();
             $("#bodyListCuotaTotales").show();
         }
     }
@@ -302,9 +301,7 @@
         var valorMedioPago = parseFloat(($("#chtrefValor").val()=="") ? "0" : $("#chtrefValor").val());
         var nuevoValor = 0;
 
-        $("#btnSelFactura").hide();
-        $("#btnBorraSug").hide();
-
+        $("#bodyListCuotaFiltro").hide();
         if( valorMedioPago <= 0 )
         {
             alert("Debe de ingresar un valor en el medio de pago!");
@@ -355,8 +352,7 @@
                     return;
                 }
 
-                $("#btnSelFactura").show();
-                $("#btnBorraSug").show();
+                $("#bodyListCuotaFiltro").show();
                 break;
             case "2":
                 if($("#tranRef").val() == "")
@@ -399,12 +395,10 @@
                     return;
                 }
 
-                $("#btnSelFactura").show();
-                $("#btnBorraSug").show();
+                $("#bodyListCuotaFiltro").show();
                 break;
             case "3":
-                $("#btnSelFactura").show();
-                $("#btnBorraSug").show();
+                $("#bodyListCuotaFiltro").show();
                 break;
         }
 
@@ -505,8 +499,7 @@
         var res = confirm("Ya cuenta con un valor de medio de pago, para modificarlo todos los cambios que realizo se perderan. ¿Desea Continuar? ");
         if(res == true)
         {
-            $("#btnSelFactura").hide();
-            $("#btnBorraSug").hide();
+            $("#bodyListCuotaFiltro").hide();
             fn_nuevoMedioPago();
         }
     }
@@ -724,8 +717,7 @@
         $("#chtrCuenta").prop( "disabled", false );
         $("#divIDRECIBO").html(recibo);
 
-        $("#btnSelFactura").hide();
-        $("#btnBorraSug").hide();
+        $("#bodyListCuotaFiltro").hide();
 
         $("#bodyListCuota").hide();
         $("#bodyListCuotaRet").hide();
@@ -2333,9 +2325,17 @@
         </div>
         <hr/>
         <div style="text-align: right;">
-            <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete ui-btn-inline" style="" onclick="fn_ReturnMain()">Cancelar</a>    
-            <a href="#" class="ui-btn btn-lg-right cus-pri-ele ui-btn-icon-left ui-icon-bullets ui-btn-inline" style="" onclick="fn_OpenCajaRpt();">Reporte Cobranza</a>    
-            <a href="#" class="ui-btn btn-lg-right cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="display: none" id= "btnEnviaCob" onclick="fn_EnviarCobranza();">Enviar Cobranza&nbsp;&nbsp;</a>    
+            <div class="ui-grid-b">
+                <div class="ui-block-a">
+                    <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete" style="" onclick="fn_ReturnMain()">Cancelar</a>    
+                </div>
+                <div class="ui-block-b" style="text-align: right;">
+                    <a href="#" class="ui-btn btn-lg-right cus-pri-ele ui-btn-icon-left ui-icon-bullets" style="" onclick="fn_OpenCajaRpt();">Reporte Cobranza</a>    
+                </div>
+                <div class="ui-block-c" style="text-align: right;">
+                    <a href="#" class="ui-btn btn-lg-right cus-suc-ele ui-btn-icon-left ui-icon-check" style="display: none" id= "btnEnviaCob" onclick="fn_EnviarCobranza();">Enviar Cobranza</a>    
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -2430,19 +2430,25 @@
         <input type="text" id="retValTotal" style="padding-right: 7px;background: white;height: 55px;" readonly>
     </div>
 
-    <hr style="margin: 40px 0px 0px 0px;"/>
+    
 
     <div id="bodyListCuota" style="display:none">
-        <div style="margin-top:15px;margin-bottom:0px;font-size: 18px" id="bodyListCuotaFiltro">
-            <div class="ui-grid-a">
+        <div style="font-size: 18px;display: none" id="bodyListCuotaFiltro">
+            <hr style="margin: 40px 0px 0px 0px;"/>
+            <div class="ui-grid-c">
                 <div class="ui-block-a">
+                    <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-check" id="btnSelFacturaCuo" onclick="fn_SeleccionarDocumento();">Factura</a> 
+                </div>
+                <div class="ui-block-b">
+                    <a href="#" class="ui-btn btn-lg-right cus-dan-ele ui-btn-icon-left ui-icon-delete" id="btnBorraSug" onclick="fn_BorrarSugerido();">Borrar</a>
+                </div>
+                <div class="ui-block-c">
                     <input type="radio" name="filtro" value="T" id="filTod" onclick="fn_cargaCuota();" checked>
                     <label for="filTod" style="border-radius: 0;padding: 23px 0px 23px 36px;" >Todas</label> 
                 </div>
-                <div class="ui-block-b">
-                    <input type="radio" name="filtro" value="V" id="filVenc" onclick="fn_cargaCuota();" style="border-radius: 0;display:none">
-                    <label for="filVenc" style="border-radius: 0;display:none;padding: 23px 0px 23px 36px;">Vencidas</label>
-                    
+                <div class="ui-block-d">
+                    <!--<input type="radio" name="filtro" value="V" id="filVenc" onclick="fn_cargaCuota();" style="border-radius: 0;display:none">
+                    <label for="filVenc" style="border-radius: 0;display:none;padding: 23px 0px 23px 36px;">Vencidas</label>-->
                     <input type="radio" name="filtro" value="P" id="filProt" onclick="fn_cargaCuota();">
                     <label for="filProt" style="border-radius: 0;padding: 23px 0px 23px 36px;">Protesto/Canje</label>   
                 </div>
@@ -2452,10 +2458,8 @@
         <div style="margin-top:7px;" >
             <div class="ui-grid-a">
                 <div class="ui-block-a">
-                    <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-check ui-btn-inline" id="btnSelFactura" onclick="fn_SeleccionarDocumento();" style="display:none;">Selecciona Factura</a>
                 </div>
                 <div class="ui-block-b" style="text-align: right;">
-                    <a href="#" class="ui-btn btn-lg-right cus-dan-ele ui-btn-icon-left ui-icon-delete ui-btn-inline" id="btnBorraSug" onclick="fn_BorrarSugerido();" style="display:none;">Borrar Recaudado</a>
                 </div>
             </div>
         </div>            
@@ -2528,8 +2532,14 @@
     <hr style="margin: 40px 0px 0px 0px;"/>
 
     <div style="margin-top:10px;padding: 3px;height:10%;text-align: right;">
-        <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete ui-btn-inline" onclick="fn_CloseCaja();">Cancelar</a>
-        <a href="#" class="ui-btn btn-lg-right cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" onclick="fn_GuargarMedioPre();">Guardar</a>
+        <div class="ui-grid-a">
+            <div class="ui-block-a">
+                <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete" onclick="fn_CloseCaja();">Cancelar</a>
+            </div>
+            <div class="ui-block-b">
+                <a href="#" class="ui-btn btn-lg-right cus-suc-ele ui-btn-icon-left ui-icon-check" onclick="fn_GuargarMedioPre();">Guardar</a>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -2550,8 +2560,14 @@
         </div>
 
         <div style="text-align: right;">
-            <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete ui-btn-inline" style="margin: 0" onclick="fn_CloseCajaMot();">Cancelar</a>    
-            <a href="#" class="ui-btn btn-lg-right cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0;" onclick="fn_GuardaCuotaMot();">Guardar Motivo</a>    
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete" style="" onclick="fn_CloseCajaMot();">Cancelar</a>    
+                </div>
+                <div class="ui-block-b" style="text-align: right;">
+                    <a href="#" class="ui-btn btn-lg-right cus-suc-ele ui-btn-icon-left ui-icon-check" style="" onclick="fn_GuardaCuotaMot();">Guardar Motivo</a>    
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -2634,7 +2650,13 @@
     </div>
 
     <div style="text-align: right;padding-top: 20px">
-        <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete ui-btn-inline" style="margin: 0" onclick="fn_CloseCajaSelFact();">Cancelar</a>    
-        <a href="#" class="ui-btn btn-lg-right cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0;" onclick="fn_SeleccionarDocAplicar();">Aplicar valor </a>    
+        <div class="ui-grid-a">
+            <div class="ui-block-a">
+                <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete" style="" onclick="fn_CloseCajaSelFact();">Cancelar</a>    
+            </div>
+            <div class="ui-block-b" style="text-align: right;">
+                <a href="#" class="ui-btn btn-lg-right cus-suc-ele ui-btn-icon-left ui-icon-check" style="" onclick="fn_SeleccionarDocAplicar();">Aplicar valor </a>
+            </div>
+        </div>
     </div>
 </div>
