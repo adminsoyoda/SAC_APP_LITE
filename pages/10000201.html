@@ -2312,10 +2312,10 @@
         <div class="ui-grid-a" style="padding: 10px 10px 10px 10px;">
             <div class="ui-block-a">
                 <input type="checkbox" name="chkTodos" id="chkTodos" onclick="fn_selTodos();">
-                <label for="chkTodos" style="border-radius: 0;width: 30%;padding: 23px 0px 23px 36px;">Todos</label>
+                <label for="chkTodos" style="border-radius: 0;width: 30%;">Todos</label>
             </div>
             <div class="ui-block-b" style="text-align: right;">
-                <a href="#" class="ui-btn cus-suc-ele btn-lg-right ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0;margin: .5em 0;" onclick="fn_OpenCaja()">Nuevo</a>    
+                <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-check ui-btn-inline" style="margin: 0;margin: .5em 0;" onclick="fn_OpenCaja()">Nuevo</a>    
             </div>
         </div>
 
@@ -2433,24 +2433,24 @@
     
 
     <div id="bodyListCuota" style="display:none">
-        <div style="font-size: 18px;display: none" id="bodyListCuotaFiltro">
+        <div style="font-size: 16px;display: none" id="bodyListCuotaFiltro">
             <hr style="margin: 40px 0px 0px 0px;"/>
             <div class="ui-grid-c">
                 <div class="ui-block-a">
-                    <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-check" id="btnSelFacturaCuo" onclick="fn_SeleccionarDocumento();">Factura</a> 
+                    <a href="#" class="ui-btn ui-btn-icon-left ui-icon-check" id="btnSelFacturaCuo" onclick="fn_SeleccionarDocumento();">Factura</a> 
                 </div>
                 <div class="ui-block-b">
-                    <a href="#" class="ui-btn btn-lg-right cus-dan-ele ui-btn-icon-left ui-icon-delete" id="btnBorraSug" onclick="fn_BorrarSugerido();">Borrar</a>
+                    <a href="#" class="ui-btn cus-dan-ele ui-btn-icon-left ui-icon-delete" id="btnBorraSug" onclick="fn_BorrarSugerido();">Borrar</a>
                 </div>
                 <div class="ui-block-c">
                     <input type="radio" name="filtro" value="T" id="filTod" onclick="fn_cargaCuota();" checked>
-                    <label for="filTod" style="border-radius: 0;padding: 23px 0px 23px 36px;" >Todas</label> 
+                    <label for="filTod" style="border-radius: 0;" >Todas</label> 
                 </div>
                 <div class="ui-block-d">
                     <!--<input type="radio" name="filtro" value="V" id="filVenc" onclick="fn_cargaCuota();" style="border-radius: 0;display:none">
                     <label for="filVenc" style="border-radius: 0;display:none;padding: 23px 0px 23px 36px;">Vencidas</label>-->
                     <input type="radio" name="filtro" value="P" id="filProt" onclick="fn_cargaCuota();">
-                    <label for="filProt" style="border-radius: 0;padding: 23px 0px 23px 36px;">Protesto/Canje</label>   
+                    <label for="filProt" style="border-radius: 0;">Protesto/Canje</label>   
                 </div>
             </div>
         </div>       
