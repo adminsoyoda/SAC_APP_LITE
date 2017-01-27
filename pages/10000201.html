@@ -9,6 +9,26 @@
     {
         width: 50%;
     }
+
+    .ui-field-contain .cus-label
+    {
+        width: 35% !important;
+    }
+
+    .ui-field-contain .ui-input-text
+    {
+        width: 63% !important;
+    }
+    .ui-field-contain .ui-select
+    {
+        width: 63% !important;
+    }
+    .ui-field-contain #allValueGroup
+    {
+        width: 63% !important;
+    }
+
+
 </style>
 
 <script type="text/javascript">
@@ -1361,7 +1381,7 @@
         {
             LINEAFACTRET=0;
             $("#AppCuotaListaRet").html("");
-            var strTableRetencion ="<tr style='background-color:#FFF'><td align='center'><strong class='text-blue'>Factura Aplicada</strong></td><td align='center'><strong class='text-blue'>Porcentaje</strong></td><td align='center'><strong class='text-blue'>Total</strong></td><td></td></tr>";
+            var strTableRetencion ="<tr style='background-color:#FFF'><td align='center' style='width:20%'><strong class='text-blue'>Factura Aplicada</strong></td><td align='center'  style='width:50%'><strong class='text-blue'>Porcentaje</strong></td><td align='center'  style='width:18%'><strong class='text-blue'>Total</strong></td><td style='width:12%'></td></tr>";
             BDConsultaOBJ("SELECT * FROM APP_CLIENTE_FACTURA WHERE EMPRESA = '"+ masterEmpresa +"' AND CARDCODE = '"+ CARDCODE +"' AND ESTADO = 'A' ORDER BY DOCNUM ASC", function (obj) {
                 var strFacturasCombo ="<select id='factapli' style='width:100%;height: 70px;' onchange='fn_calculaImpuesto("+LINEAFACTRET+")'>";
                 for (var i = 0; i < obj.rows.length; i++) {
@@ -1377,10 +1397,10 @@
                     }
                     strImpuestoCombo = strImpuestoCombo + "</select >";
                     strTableRetencion = strTableRetencion + "<tr style='background-color:#FFF' id='trRetLin"+LINEAFACTRET+"'>";
-                    strTableRetencion = strTableRetencion + "<td>"+ strFacturasCombo +"</td>";
-                    strTableRetencion = strTableRetencion + "<td>"+ strImpuestoCombo +"</td>";
-                    strTableRetencion = strTableRetencion + "<td><input type='text' name='valorRetname' style='width: 80px;text-align: right;height: 70px;' onclick=\"fn_focus('valorRet"+LINEAFACTRET+"')\" onblur='fn_VerificaImpuestoLimite("+LINEAFACTRET+");'  id='valorRet"+LINEAFACTRET+"' /></td>";
-                    strTableRetencion = strTableRetencion + "<td></td></tr>";
+                    strTableRetencion = strTableRetencion + "<td style='width:20%'>"+ strFacturasCombo +"</td>";
+                    strTableRetencion = strTableRetencion + "<td style='width:50%'>"+ strImpuestoCombo +"</td>";
+                    strTableRetencion = strTableRetencion + "<td style='width:18%'><input type='text' name='valorRetname' style='text-align: right;height: 70px;' onclick=\"fn_focus('valorRet"+LINEAFACTRET+"')\" onblur='fn_VerificaImpuestoLimite("+LINEAFACTRET+");'  id='valorRet"+LINEAFACTRET+"' /></td>";
+                    strTableRetencion = strTableRetencion + "<td style='width:12%'></td></tr>";
                     $("#AppCuotaListaRet").html(strTableRetencion);
 
                     setTimeout(function(){
@@ -1528,16 +1548,16 @@
                     LINEAFACTRET=LINEAFACTRET+1;
                     var strImpuestoCombo="<select id='retapli"+LINEAFACTRET+"' name='retapliname' style='width:100%;height: 70px;' onchange='fn_calculaImpuesto("+LINEAFACTRET+")' >";
                     var strTableRetencion = "<tr style='background-color:#FFF' id='trRetLin"+LINEAFACTRET+"'>";
-                    strTableRetencion = strTableRetencion + "<td align='' style='padding-top: 18px;'>"+$("#factapli").val()+"</td>";
+                    strTableRetencion = strTableRetencion + "<td align='' style='padding-top: 18px;width:20%'>"+$("#factapli").val()+"</td>";
                     for (var i = 0; i < obj.rows.length; i++) 
                     {
                         var row = obj.rows.item(i);
                         strImpuestoCombo = strImpuestoCombo + "<option value='"+row.BASETYPE+"-"+row.WTCODE+"'>"+row.WTNAME+"</option>";
                     }
                     strImpuestoCombo = strImpuestoCombo + "</select >";
-                    strTableRetencion = strTableRetencion + "<td>"+ strImpuestoCombo +"</td>";
-                    strTableRetencion = strTableRetencion + "<td><input type='text' name='valorRetname' style='width: 80px;text-align: right;height: 70px;' onclick=\"fn_focus('valorRet"+LINEAFACTRET+"')\" onblur='fn_VerificaImpuestoLimite("+LINEAFACTRET+");' id='valorRet"+LINEAFACTRET+"' /></td>";
-                    strTableRetencion = strTableRetencion + "<td><button class='btn btn-box-tool' style='height: 70px;width: 35px;' onclick=\"fn_DeleteItemListRet("+LINEAFACTRET+")\"><i class='fa fa-remove' style='font-size: 20px;'></i></button></td></tr>";
+                    strTableRetencion = strTableRetencion + "<td style='width:50%'>"+ strImpuestoCombo +"</td>";
+                    strTableRetencion = strTableRetencion + "<td style='width:18%'><input type='text' name='valorRetname' style='text-align: right;height: 70px;' onclick=\"fn_focus('valorRet"+LINEAFACTRET+"')\" onblur='fn_VerificaImpuestoLimite("+LINEAFACTRET+");' id='valorRet"+LINEAFACTRET+"' /></td>";
+                    strTableRetencion = strTableRetencion + "<td style='width:12%'><button class='btn btn-box-tool' style='height: 70px;width: 35px;' onclick=\"fn_DeleteItemListRet("+LINEAFACTRET+")\"><i class='fa fa-remove' style='font-size: 20px;'></i></button></td></tr>";
 
                     $("#AppCuotaListaRet").append(strTableRetencion);
 
@@ -2309,7 +2329,7 @@
             <ul data-role="listview" data-inset="true" id="tagLineasCobranza" style="font-size: 5px;">
             </ul>
         </div>
-
+        <hr/>
         <div style="text-align: right;">
             <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete ui-btn-inline" style="" onclick="fn_ReturnMain()">Cancelar</a>    
             <a href="#" class="ui-btn btn-lg-right cus-pri-ele ui-btn-icon-left ui-icon-bullets ui-btn-inline" style="" onclick="fn_OpenCajaRpt();">Reporte Cobranza</a>    
@@ -2379,7 +2399,7 @@
     </div>
 
     <div class="ui-field-contain" name="retencion" style="display:none">
-        <label class="cus-label"><strong>Fecha Emi. de Retencion:</strong></label>
+        <label class="cus-label"><strong>Fecha Emi. Retencion:</strong></label>
         <input type="text" id="retFechEmi"  onclick="datePickerAndroid('retFechEmi','Fecha Emision de retencion', 0 , 1 );" onkeypress="return false" onchange="fn_TipoRetencion()" style="padding-right: 7px;height: 70px;" >
     </div>
 
@@ -2408,24 +2428,14 @@
         <input type="text" id="retValTotal" style="padding-right: 7px;background: white;height: 55px;" readonly>
     </div>
 
-    <div name="retencion" style="display:none">
-        <div class="ui-grid-a">
-            <div class="ui-block-a"></div>
-            <div class="ui-block-b">
-                <input type="radio" name="filtroRet" value="E" id="TipoRetE" onclick="fn_TipoRetencion()">
-                <label for="TipoRetE" style="border-radius: 0;padding: 23px 0px 23px 36px;">Electronica</label>
-                <input type="radio" name="filtroRet" value="M" id="TipoRetM" onclick="fn_TipoRetencion()" checked>
-                <label for="TipoRetM" style="border-radius: 0;padding: 23px 0px 23px 36px;">Manual</label>           
-            </div>
-        </div>
-    </div>
+    <hr style="margin: 40px 0px 0px 0px;"/>
 
     <div id="bodyListCuota" style="display:none">
-        <div style="margin-top:15px;margin-bottom:15px;font-size: 18px" id="bodyListCuotaFiltro">
+        <div style="margin-top:15px;margin-bottom:0px;font-size: 18px" id="bodyListCuotaFiltro">
             <div class="ui-grid-a">
                 <div class="ui-block-a">
-                    <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-nada ui-btn-inline ui-mini" style="margin: 0;margin: .5em 0;" >Vencidas</a>
-                    <a href="#" class="ui-btn cus-dan-ele ui-btn-icon-left ui-icon-nada ui-btn-inline ui-mini" style="margin: 0;margin: .5em 0;" >Por Pagar</a>
+                    <input type="radio" name="filtro" value="T" id="filTod" onclick="fn_cargaCuota();" checked>
+                    <label for="filTod" style="border-radius: 0;padding: 23px 0px 23px 36px;" >Todas</label> 
                 </div>
                 <div class="ui-block-b">
                     <input type="radio" name="filtro" value="V" id="filVenc" onclick="fn_cargaCuota();" style="border-radius: 0;display:none">
@@ -2433,9 +2443,6 @@
                     
                     <input type="radio" name="filtro" value="P" id="filProt" onclick="fn_cargaCuota();">
                     <label for="filProt" style="border-radius: 0;padding: 23px 0px 23px 36px;">Protesto/Canje</label>   
-
-                    <input type="radio" name="filtro" value="T" id="filTod" onclick="fn_cargaCuota();" checked>
-                    <label for="filTod" style="border-radius: 0;padding: 23px 0px 23px 36px;" >Todas</label>           
                 </div>
             </div>
         </div>       
@@ -2476,6 +2483,20 @@
     </div>
 
     <div id="bodyListCuotaRet" style="display:none">
+
+        <div name="retencion" style="display:none;    margin-top: 15px;">
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    <input type="radio" name="filtroRet" value="M" id="TipoRetM" onclick="fn_TipoRetencion()" checked>
+                    <label for="TipoRetM" style="border-radius: 0;padding: 23px 0px 23px 36px;">Manual</label>     
+                </div>
+                <div class="ui-block-b">
+                    <input type="radio" name="filtroRet" value="E" id="TipoRetE" onclick="fn_TipoRetencion()">
+                    <label for="TipoRetE" style="border-radius: 0;padding: 23px 0px 23px 36px;">Electronica</label>
+                </div>
+            </div>        
+        </div>
+
         <div style="margin-top:15px;margin-bottom:0px;display:;text-align: right;" id="btnMasRet">
             <a href="#" class="ui-btn cus-suc-ele ui-btn-icon-left ui-icon-plus ui-btn-inline" id="btnSelFactura" onclick='fn_nuevaFactRet();'>Agregar</a>
         </div>  
@@ -2501,6 +2522,8 @@
     </div>
 
     <div id="divIDRECIBO" style="display:none"></div>
+
+    <hr style="margin: 40px 0px 0px 0px;"/>
 
     <div style="margin-top:10px;padding: 3px;height:10%;text-align: right;">
         <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete ui-btn-inline" onclick="fn_CloseCaja();">Cancelar</a>
