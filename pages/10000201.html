@@ -10,7 +10,7 @@
         width: 50%;
     }
 
-    .ui-field-contain .cus-label
+    /*.ui-field-contain .cus-label
     {
         width: 35% !important;
     }
@@ -26,7 +26,7 @@
     .ui-field-contain #allValueGroup
     {
         width: 63% !important;
-    }
+    }*/
 
 
 </style>
@@ -2358,7 +2358,7 @@
 
     <div class="ui-field-contain" name="cheque" style="display:none">
         <label class="cus-label"><strong># Cheque:</strong></label>
-        <input type="number" step="0.01" id="chNumCheque" onclick="fn_focus('chNumCheque');" style="padding-right: 7px;height: 55px;">
+        <input type="text" id="chNumCheque" onclick="fn_focus('chNumCheque');" style="padding-right: 7px;height: 55px;">
     </div>
 
     <div class="ui-field-contain" name="transf" style="display:none">
@@ -2531,7 +2531,7 @@
 
     <hr style="margin: 40px 0px 0px 0px;"/>
 
-    <div style="margin-top:10px;padding: 3px;height:10%;text-align: right;">
+    <div data-role="" style="margin-top:10px;padding: 3px;height:10%;text-align: right;">
         <div class="ui-grid-a">
             <div class="ui-block-a">
                 <a href="#" class="ui-btn btn-lg-right ui-btn-icon-left ui-icon-delete" onclick="fn_CloseCaja();">Cancelar</a>
@@ -2541,6 +2541,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <div role="container" id="containerCobMot" style="display:none">
