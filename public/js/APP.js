@@ -99,34 +99,22 @@ function AppGestorNotificacion() {
 //---------------------------------------------------------------------------------------------------------------------------
 //Carga option en Contenedor
 //---------------------------------------------------------------------------------------------------------------------------
-function loadOption(option) {
+function loadOption(ContenedorGlobal,option) {
     var html="";
     BDConsultaOBJ("SELECT * FROM APP_MENU;", function (obj) {
         for (var i = 0; i < obj.rows.length; i++) {
             var row = obj.rows.item(i);
             if(option==row.IDMENU)
             {
-                $("#App_content").html(unescape(row.HTML));
+                $("#"+ContenedorGlobal).html(unescape(row.HTML));
+                setTimeout(function(){
+                    $( "div[data-role=page]" ).page( "destroy" ).page();
+                }, 50);
             }
         }
     });
 }
 
-function loadOption2(ContenedorGlobal) {
-    $("#App_content").load(ContenedorGlobal, function () {
-        setTimeout(function(){
-            $( "div[data-role=page]" ).page( "destroy" ).page();
-        }, 50); 
-    });
-}
-
-function loadOptionOp(ContenedorGlobal,Option) {
-    $("#"+ContenedorGlobal).load(Option, function () {
-        setTimeout(function(){
-            $( "div[data-role=page]" ).page( "destroy" ).page();
-        }, 50); 
-    });
-}
 
 //---------------------------------------------------------------------------------------------------------------------------
 //Enter para buscador

@@ -3,19 +3,19 @@
     //Load de Action
     
     (function() {
-        BDConsulta("SELECT * FROM APP_USUARIO;", function (obj) {
-            AppGestorName = "";
-            AppGestorName = unescape(obj.NOMBRE);
-            $("#AppGestorName").html(AppGestorName.substring(0, 20) + '...');
-        });
-
+        
         //Menu Izquierdo
-        /*BDConsultaOBJ("SELECT * FROM APP_MENU;", function (obj) {
+        BDConsultaOBJ("SELECT * FROM APP_MENU WHERE MENU != '' ;", function (obj) {
             for (var i = 0; i < obj.rows.length; i++) {
                 var row = obj.rows.item(i);
                 $("#AppGestorOption").append(row.MENU);
             }
-        });*/
+            BDConsulta("SELECT * FROM APP_USUARIO;", function (obj) {
+                AppGestorName = "";
+                AppGestorName = unescape(obj.NOMBRE);
+                $("#AppGestorName").html(AppGestorName.substring(0, 20) + '...');
+            });
+        });
 
         BDConsultaOBJ("SELECT * FROM APP_EMPRESA;", function (obj) {
             for (var i = 0; i < obj.rows.length; i++) {
@@ -28,7 +28,7 @@
         });
         
         //Option Initial
-        loadOption2('pages/10000000.html');
+        loadOption('App_content','10000000');
     })();
 /*
     document.addEventListener("backbutton", onBackKeyDown);
@@ -42,7 +42,6 @@
     } 
     
     function CerrarSesion() {
-        alert("aqui");
         var res = confirm("¿Seguro desea Cerrar Sesion?")
         if(res==true){
             BDActualizacion("UPDATE APP_USUARIO SET ACTIVO='I'");
@@ -73,21 +72,7 @@
 </div>
 
 <div data-role="panel" id="inside" data-position="left" data-display="overlay" data-theme="a">
-    <ul data-role="listview" style="background-size: 200px;">
-        <li data-icon="home">
-            <a class="cus-lg cus-btn-icon-big" onclick="loadOption2('pages/10000000.html');" href="#" data-rel="close">
-                <div>
-                    <p style="text-overflow: ellipsis;font-size: 14px">
-                        <img src="public/img/Logo.png" width="55" style="border-radius: 3em;position: absolute;top: 4px;left: 95px;">
-                        <strong id="AppGestorName" style="top: 51px;position: absolute;left: 20px;"></strong>
-                    <p>
-                </div>
-            </a>
-        </li>
-        <li data-icon="clock"><a class="cus-lg cus-color-white cus-btn-icon-big" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Rutero</div></a></li>
-        <li data-icon="calendar"><a class="cus-lg cus-color-white cus-btn-icon-big" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Gestion</div></a></li>
-        <li data-icon="search"><a class="cus-lg cus-color-white cus-btn-icon-big" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Informes</div></a></li>
-        <li data-icon="user"><a class="cus-lg cus-color-white cus-btn-icon-big" href="#" data-rel="close"><div class="cus-ele-pad-top-20">Hola</div></a></li>
+    <ul data-role="listview" style="background-size: 200px;" id="AppGestorOption">
     </ul>
 </div>
 

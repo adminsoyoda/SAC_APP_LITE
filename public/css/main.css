@@ -281,6 +281,16 @@
         color: #0073b7 !important;
     }
 
+    .text-green
+    {
+        color: #00a65a !important;
+    }
+
+    .text-yellow
+    {
+        color: #f39c12 !important;
+    }
+
     .cus-td-head-yellow
     {
         margin-top: 7px;
