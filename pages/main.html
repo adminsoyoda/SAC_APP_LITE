@@ -1,7 +1,6 @@
 
 <script>
     //Load de Action
-    
     (function() {
         
         //Menu Izquierdo
@@ -30,10 +29,11 @@
         //Option Initial
         loadOption('App_content','10000000');
     })();
-/*
+
     document.addEventListener("backbutton", onBackKeyDown);
-*/
-    function onBackKeyDown(){
+
+    function onBackKeyDown()
+    {
         navigator.notification.confirm('¿Salir de la aplicación?',function(button) {
           if (button == 2) {
             navigator.app.exitApp();
@@ -41,14 +41,39 @@
         },'Salir', 'No,Si');return false;
     } 
     
-    function CerrarSesion() {
+    function CerrarSesion() 
+    {
         var res = confirm("¿Seguro desea Cerrar Sesion?")
         if(res==true){
             BDActualizacion("UPDATE APP_USUARIO SET ACTIVO='I'");
             contentPage('pages/login.html');
         }
     }
-    
+
+    function CargaEmpresas()
+    {
+        $("#listEmp").html('<li data-role="list-divider">Seleccionar Empresa</li>');
+        BDConsultaOBJ("SELECT * FROM APP_EMPRESA ORDER BY RAZONSOCIAL ASC;", function (obj) {
+            for (var i = 0; i < obj.rows.length; i++) {
+                var row = obj.rows.item(i);
+                var active = (masterEmpresa!=row.RAZONSOCIAL)? "cus-pri-deg-ele":"cus-war-ele" ;
+
+                $("#listEmp").append('<li><a href="#" class="'+ active +'" style="margin: 10px;padding: 15px 30px;" onclick="cambioEmpresa(\'' + row.RAZONSOCIAL + '\')" data-rel="back">'+ row.RAZONSOCIAL +'</a></li>');
+            }
+            $('#listEmp').listview('refresh');
+        });
+    }
+
+    function cambioEmpresa(newEmpresa){
+        $("#loader_sys_btn_show").click();
+        if(masterEmpresa!=newEmpresa){
+            masterEmpresa=newEmpresa;
+            $("#AppGestorEmpresa").html(masterEmpresa);
+            loadOption('10000000');
+        }
+        $("#loader_sys_btn_hide").click();
+    }
+
 </script>
 
 <style type="text/css">
@@ -57,12 +82,19 @@
         background: #ecf0f5;
         padding-top: 82px;
     }
+
+    #containerEmp .ui-title
+    {
+        margin: 0 0% !important;
+    }
 </style>
 
 <div data-role="header" class="cus-lg-header cus-pri-ele" data-position="fixed" data-theme="a">
     <a href="#inside" class=" ui-btn ui-icon-bars ui-btn-icon-notext cus-btn-sin-radius cus-btn-icon-notext cus-btn-lg cus-pri-ele" style="border-color: #003763"></a>
     <div class="center-div ui-nodisc-icon" style="text-align: right;" >
-        <a href="#" class="ui-btn ui-icon-delete ui-corner-all cus-war-ele" style="border: 0"><strong id="AppGestorEmpresa" style="font-size: 16px;"></strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <a href="#popupEmp" class="ui-btn ui-icon-delete ui-corner-all cus-war-ele" style="border: 0" data-rel="popup" data-transition="pop" onclick="CargaEmpresas();"><strong id="AppGestorEmpresa" style="font-size: 16px;"></strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
+
         <a href="#" onclick="SyncProcess(true);" class="ui-btn ui-icon-refresh ui-btn-icon-notext cus-btn-icon-notext ui-corner-all cus-btn-lg cus-pri-ele" style="border-color: #003763;top: 13px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
         <a href="#" onclick="CerrarSesion();" class="ui-btn ui-icon-power ui-btn-icon-notext cus-btn-icon-notext ui-corner-all cus-btn-lg cus-pri-ele" style="border-color: #003763;top: 13px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
@@ -74,6 +106,18 @@
 <div data-role="panel" id="inside" data-position="left" data-display="overlay" data-theme="a">
     <ul data-role="listview" style="background-size: 200px;" id="AppGestorOption">
     </ul>
+</div>
+
+<div id="containerEmp" style="display: none">
+
+   
+
+    <div data-role="popup" id="popupEmp" data-theme="a">
+        <ul data-role="listview" data-inset="true" style="min-width:210px;" id="listEmp">
+            
+        </ul>
+    </div>
+
 </div>
 
           
