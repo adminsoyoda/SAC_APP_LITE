@@ -124,6 +124,27 @@ function SyncProcess(loader) {
     });
 }
 
+function SyncOnly(loader,Action) {
+    var CODIGOINTERNO = '';
+    var FECHAANT = '';
+    
+    BDConsultaOBJ("SELECT * FROM APP_USUARIO;", function (obj) {
+        for (var i = 0; i < obj.rows.length; i++) {
+            var row = obj.rows.item(i);
+            CODIGOINTERNO = row.IDUSERWEB;
+        }
+        var dataPost = {
+            CODIGOINTERNO: CODIGOINTERNO,
+            INISYNC: false,
+            LOADER:loader
+        };
+        AjaxSAC(syncServer + "/"+Action, dataPost, loader, function (callback) {
+            $("#sync_sys").html(callback);
+            return true;
+        });
+    });
+}
+
 function SyncApp_Web(TableSelect, TableAction, TableFinAction, ColumType, detailColum,FieldsUpdate,FielsdExist,alerta,msg,loader){
     if (loader) { $("#loader_sys_btn_show").click(); }
     index=0;
@@ -215,9 +236,8 @@ function SyncAppWebExec(alerta,msg,loader){
 
             if(msg)
             {
-                alert(regcallbackAll[1]);
+                $("#sync_sys").html(regcallbackAll[1]);
                 $("#loader_sys_btn_hide").click();
-                $("#sync_sys").html("");
             }
         });
     }
