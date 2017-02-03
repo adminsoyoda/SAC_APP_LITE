@@ -101,6 +101,7 @@ function AppGestorNotificacion() {
 //---------------------------------------------------------------------------------------------------------------------------
 function loadOption(ContenedorGlobal,option) {
     var html="";
+    $("#"+ContenedorGlobal).html();
     BDConsultaOBJ("SELECT * FROM APP_MENU;", function (obj) {
         for (var i = 0; i < obj.rows.length; i++) {
             var row = obj.rows.item(i);
