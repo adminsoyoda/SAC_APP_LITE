@@ -4,23 +4,6 @@
     (function() {
         
         //Menu Izquierdo
-        BDConsultaOBJ("SELECT * FROM APP_MENU WHERE MENU != '' ;", function (obj) {
-            for (var i = 0; i < obj.rows.length; i++) {
-                var row = obj.rows.item(i);
-                $("#AppGestorOption").append(row.MENU);
-            }
-            
-            setTimeout(function() {
-                $('#AppGestorOption').listview('refresh');
-            }, 500);
-
-            BDConsulta("SELECT * FROM APP_USUARIO;", function (obj) {
-                AppGestorName = "";
-                AppGestorName = unescape(obj.NOMBRE);
-                $("#AppGestorName").html(AppGestorName.substring(0, 20) + '...');
-            });
-        });
-
         BDConsultaOBJ("SELECT * FROM APP_EMPRESA;", function (obj) {
             for (var i = 0; i < obj.rows.length; i++) {
                 var row = obj.rows.item(i);
@@ -34,6 +17,7 @@
         //Option Initial
         loadOption('App_content','10000000');
         loadOption('ConfigPanel','10000400');
+        loadOption('ActionPanel','10000500');
     })();
 
     document.addEventListener("backbutton", onBackKeyDown);
@@ -112,10 +96,7 @@
 <div role="main" class="ui-content jqm-content jqm-fullwidth" id="App_content">
 </div>
 
-<div data-role="panel" id="insideL" data-position="left" data-display="overlay" data-theme="a">
-    <ul data-role="listview" style="background-size: 200px;" id="AppGestorOption">
-    </ul>
-</div>
+<div id ="ActionPanel"></div>
 
 <div id ="ConfigPanel"></div>
 
