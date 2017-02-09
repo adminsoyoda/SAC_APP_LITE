@@ -25,7 +25,12 @@ var regFieldExist = [];
 
 //-------------------------------------------------------------------------------------------------
 //FUNCIONES BASE DE DATOS
-function errorCB(err) { alert("Error processing SQL: " + err.code + " - " + err.name); }
+function errorCB(err) 
+{ 
+    alert("Error processing SQL: " + err.code + " - " + err.name); 
+    SyncData(true,'SyncErrorLog',err.message) ;
+}
+
 function successCB() { }
 
 function BDConsulta(sqlCommand, RESULTADO) {
@@ -64,15 +69,16 @@ function BDActualizacionObj(sqlCommand,Obj) {
     }, errorCB, successCB);    
 }
 
- function BDActualizacionObjWithCallback(sqlCommand,Obj,callback){     
+function BDActualizacionObjWithCallback(sqlCommand,Obj,callback)
+{     
     var db = window.openDatabase(DATABASE_NAME, DATABASE_VERSION, DATABASE_DESCRIPTION, DATABASE_SIZE);
     db.transaction(function(tx){
        tx.executeSql(sqlCommand,Obj,callback);        
     }, errorCB, successCB);   
 }
 
-
-function SyncExeReady(CODIGOINTERNO,TIPOSYNC, RETORNO) {
+function SyncExeReady(CODIGOINTERNO,TIPOSYNC, RETORNO) 
+{
     $("#loader_sys_btn_show").click();
     var dataPost = {
         CODIGOINTERNO: CODIGOINTERNO
@@ -101,7 +107,8 @@ function SyncExe(CODIGOINTERNO,INISYNC, RETORNO) {
     });
 }
 
-function SyncProcess(loader) {
+function SyncProcess(loader) 
+{
     var CODIGOINTERNO = '';
     var FECHAANT = '';
     
@@ -124,7 +131,8 @@ function SyncProcess(loader) {
     });
 }
 
-function SyncOnly(loader,Action) {
+function SyncOnly(loader,Action) 
+{
     var CODIGOINTERNO = '';
     var FECHAANT = '';
     
@@ -137,6 +145,26 @@ function SyncOnly(loader,Action) {
             CODIGOINTERNO: CODIGOINTERNO,
             INISYNC: false,
             LOADER:loader
+        };
+        AjaxSAC(syncServer + "/"+Action, dataPost, loader, function (callback) {
+            $("#sync_sys").html(callback);
+            return true;
+        });
+    });
+}
+
+function SyncData(loader,Action,Data) {
+    var CODIGOINTERNO = '';
+    var FECHAANT = '';
+    
+    BDConsultaOBJ("SELECT * FROM APP_USUARIO;", function (obj) {
+        for (var i = 0; i < obj.rows.length; i++) {
+            var row = obj.rows.item(i);
+            CODIGOINTERNO = row.IDUSERWEB;
+        }
+        var dataPost = {
+            CODIGOINTERNO: CODIGOINTERNO,
+            DATA: Data,
         };
         AjaxSAC(syncServer + "/"+Action, dataPost, loader, function (callback) {
             $("#sync_sys").html(callback);
