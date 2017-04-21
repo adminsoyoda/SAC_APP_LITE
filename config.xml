@@ -35,7 +35,6 @@
     <plugin name="cordova-plugin-geolocation" version="2.1.0" />
     <plugin name="cordova-plugin-camera" version="2.1.0" />
     <plugin name="cordova.plugins.diagnostic" version="*" />
-    <plugin name="cordova-plugin-request-location-accuracy" version="2.1" />
 
     <platform name="android">
         <allow-intent href="market:*" />
