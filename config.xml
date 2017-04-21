@@ -36,7 +36,7 @@
     <plugin name="cordova-plugin-camera" version="2.1.0" />
     <plugin name="cordova.plugins.diagnostic" version="*" />
     <plugin name="cordova-plugin-request-location-accuracy" version="2.1" />
-    
+
     <platform name="android">
         <allow-intent href="market:*" />
         <plugin name="cordova-plugin-file" version="*" />
@@ -61,7 +61,8 @@
         <plugin name="cordova-plugin-datepicker" version="*" />
 
         <preference name="android-build-tool" value="gradle" /> <!-- Phonegap Build only -->
-
+        <preference name="android-minSdkVersion" value="14" />
+        
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.BLUETOOTH" />
             <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
