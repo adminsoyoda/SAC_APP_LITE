@@ -12,7 +12,7 @@
     <author href="http://www.soyoda.com" email="sistemas@soyodaecuador.com">
       Desarrollo Soyoda
     </author>
-    <content src="index.html" />
+    
     <access origin="*"/>
     <!--
         <allow-intent href="http://*/*" />
@@ -95,11 +95,11 @@
         </config-file> 
     </platform>
 
-    <!-- Define app icon for each platform. -->
+    <!-- Define app icon for each platform. 
     <icon src="public/img/Logo.png" width="72" height="72" />
     <icon src="public/img/Logo.png" width="48" height="48" />
     <icon src="public/img/Logo.png" width="36" height="36" />
-
+    -->
     <!-- Define app splash screen for each platform. 
     <splash src="res/screen/android/screen-ldpi-portrait.png"       platform="android" qualifier="port-ldpi" />
     <splash src="res/screen/android/screen-mdpi-portrait.png"       platform="android" qualifier="port-mdpi" />
