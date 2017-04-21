@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version='1.0' encoding='utf-8'?>
 <widget id="cordova.plugins.diagnostic.example"
-        version="1.0.1"
+        version="3.5.0"
         xmlns="http://www.w3.org/ns/widgets"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:cdv="http://cordova.apache.org/ns/1.0">
-
     <name>SAC Lite</name>
     <description>
       Sistema de Asesoria Comercial
@@ -14,9 +12,8 @@
     <author href="http://www.soyoda.com" email="sistemas@soyodaecuador.com">
       Desarrollo Soyoda
     </author>
-
     <content src="index.html" />
-    <access origin="*"/>
+    <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -25,16 +22,16 @@
     <allow-intent href="geo:*" />
 
     <preference name="Fullscreen" value="false" />
-    <!--<preference name="phonegap-version" value="cli-5.4.1" />  Phonegap Build only -->
+    <preference name="phonegap-version" value="cli-6.4.0" /> <!-- Phonegap Build only -->
     <preference name="keepRunning" value="true" />
     <preference name="showmessageinnotification" value="true" />
 
-    <plugin name="cordova-plugin-whitelist" version="1" />
-    <plugin name="cordova.plugins.diagnostic" version="3" />
+    <plugin name="cordova-plugin-whitelist" version="*" />
     <plugin name="cordova-plugin-device" version="*" />
     <plugin name="cordova-custom-config" version="*" />
     <plugin name="cordova-plugin-geolocation" version="2.1.0" />
     <plugin name="cordova-plugin-camera" version="2.1.0" />
+    <plugin name="cordova.plugins.diagnostic" version="*" />
     <plugin name="cordova-plugin-request-location-accuracy" version="2.1" />
 
     <platform name="android">
@@ -61,8 +58,7 @@
         <plugin name="cordova-plugin-datepicker" version="*" />
 
         <preference name="android-build-tool" value="gradle" /> <!-- Phonegap Build only -->
-        <preference name="android-minSdkVersion" value="14" />
-
+        
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.BLUETOOTH" />
             <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
