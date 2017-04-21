@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <widget id="cordova.plugins.diagnostic.example"
         version="1.0.1"
         xmlns="http://www.w3.org/ns/widgets"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:cdv="http://cordova.apache.org/ns/1.0">
-
     <name>SAC Lite</name>
     <description>
       Sistema de Asesoria Comercial
@@ -14,23 +12,23 @@
     <author href="http://www.soyoda.com" email="sistemas@soyodaecuador.com">
       Desarrollo Soyoda
     </author>
-
     <content src="index.html" />
     <access origin="*"/>
     <!--
-    <allow-intent href="http://*/*" />
-    <allow-intent href="https://*/*" />
-    <allow-intent href="tel:*" />
-    <allow-intent href="sms:*" />
-    <allow-intent href="mailto:*" />
-    <allow-intent href="geo:*" />
+        <allow-intent href="http://*/*" />
+        <allow-intent href="https://*/*" />
+        <allow-intent href="tel:*" />
+        <allow-intent href="sms:*" />
+        <allow-intent href="mailto:*" />
+        <allow-intent href="geo:*" />
+        <allow-intent href="market:*" />
     -->
-
     <preference name="Fullscreen" value="false" />
     <preference name="phonegap-version" value="cli-6.4.0" /> <!-- Phonegap Build only -->
-    <preference name="keepRunning" value="true" />
-    <preference name="showmessageinnotification" value="true" />
-
+    <!--
+        <preference name="keepRunning" value="true" />
+        <preference name="showmessageinnotification" value="true" />
+    -->
     <plugin name="cordova-plugin-whitelist" version="*" />
     <plugin name="cordova-plugin-device" version="*" />
     <plugin name="cordova-custom-config" version="*" />
@@ -39,7 +37,6 @@
     <plugin name="cordova.plugins.diagnostic" version="*" />
 
     <platform name="android">
-        <allow-intent href="market:*" />
         <plugin name="cordova-plugin-file" version="*" />
         <plugin name="cordova-plugin-battery-status" source="npm" spec="~1.1.1"/>
         <plugin name="cordova-plugin-media-capture" source="npm" spec="~1.2.0"/>
@@ -66,26 +63,26 @@
 
         <config-file target="AndroidManifest.xml" parent="/*">
 
-        <uses-permission android:name="android.permission.BLUETOOTH" />
-        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+            <uses-permission android:name="android.permission.BLUETOOTH" />
+            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
-        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-        <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+            <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
 
-        <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+            <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
-        <uses-permission android:name="android.permission.CAMERA" />
-        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.CAMERA" />
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-        <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
 
-        <uses-permission android:name="android.permission.READ_CONTACTS" />
+            <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-        <uses-permission android:name="android.permission.READ_CALENDAR" />
+            <uses-permission android:name="android.permission.READ_CALENDAR" />
 
         </config-file>
     </platform>
