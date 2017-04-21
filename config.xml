@@ -29,12 +29,12 @@
     <preference name="keepRunning" value="true" />
     <preference name="showmessageinnotification" value="true" />
 
-    <plugin name="cordova-plugin-whitelist" version="*" />
+    <plugin name="cordova-plugin-whitelist" version="1" />
+    <plugin name="cordova.plugins.diagnostic" version="3" />
     <plugin name="cordova-plugin-device" version="*" />
     <plugin name="cordova-custom-config" version="*" />
     <plugin name="cordova-plugin-geolocation" version="2.1.0" />
     <plugin name="cordova-plugin-camera" version="2.1.0" />
-    <plugin name="cordova.plugins.diagnostic" version="*" />
     <plugin name="cordova-plugin-request-location-accuracy" version="2.1" />
 
     <platform name="android">
@@ -61,7 +61,7 @@
         <plugin name="cordova-plugin-datepicker" version="*" />
 
         <preference name="android-build-tool" value="gradle" /> <!-- Phonegap Build only -->
-        <preference name="android-minSdkVersion" value="8" />
+        <preference name="android-minSdkVersion" value="14" />
 
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.BLUETOOTH" />
