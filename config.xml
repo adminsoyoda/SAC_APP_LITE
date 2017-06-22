@@ -2,6 +2,7 @@
 <widget id="cordova.plugins.diagnostic.example"
         version="3.5.0"
         xmlns="http://www.w3.org/ns/widgets"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>SAC Lite</name>
     <description>
@@ -56,7 +57,7 @@
         <plugin name="cordova-plugin-file" version="*" />
         <plugin name="cordova-plugin-datepicker" version="*" />
 
-        <preference name="android-build-tool" value="gradle" /> <!-- Phonegap Build only -->
+        <!--<preference name="android-build-tool" value="gradle" />  Phonegap Build only -->
         
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.BLUETOOTH" />
